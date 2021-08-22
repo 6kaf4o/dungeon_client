@@ -1,12 +1,11 @@
-class Player{
-    constructor(position,health,keys,sa,id){
+module.exports = class Player{
+    constructor(position, health, inventory, id){
         this.position = position;
         this.id = id;
+        this.inventory = inventory;
         this.delta = 0;
         this.spritesheet = new Sheet('bruh.png',4,4,408,611)
         this.h = health;
-        this.k = keys;
-        this.a = sa;
         this.sprite = {
             left:[],
             right:[],
