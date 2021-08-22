@@ -1,4 +1,4 @@
-class Line {
+module.exports = class Line {
     //Takes two points as parameters(begin and end), each of them has a x and y position
     constructor(begin, end) {
         this.begin = begin;
