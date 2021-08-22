@@ -120,9 +120,19 @@
         <!-- user's game file -->
         <!-- <script src="game.js"></script> -->
         
+        <script src="line.js"></script>
+        <script src="lighting.js"></script>
+        <script src="point.js"></script>
         <script src="Player.js"></script>
+        <script src="utility.js"></script>
+        <script src="Sheet.js"></script>
         <script src="Playerjstest.js"></script>
         <script>
+
+            function distance(point1,point2){
+                return Math.hypot(point1.x - point2.x, point1.y - point2.y);
+            }
+
             function redraw() {
                 context.clearRect(0, 0, canvas.width, canvas.height);
 

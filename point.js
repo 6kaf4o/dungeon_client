@@ -1,9 +1,9 @@
 class Point {
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+            this.x=x
+            this.y=y
     }
     draw() {
-        context.fillRect(this.x - 5, this.y - 5, 10, 10);
+        context.fillRect(this.position.x - 5, this.position.y - 5, 10, 10);
     }
 }

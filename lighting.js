@@ -23,7 +23,12 @@ class Lighting {
                 this.intersections.push(this.intersection);
             }
         }
-        return this.intersections;
+        return this.intersections
+        // context.beginPath()
+        // for(let i = 0 ; i < this.intersections.length ; i ++){
+        //     context.lineTo(this.intersection[i].x,this.intersection[i].y)
+        // }
+        // context.fill()
     }
     /*inSightSquare(start, object) {
         let squareLeft = new Line(object, new Point(object.x,object.y+object.size));
