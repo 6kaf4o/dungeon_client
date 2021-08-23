@@ -39,8 +39,7 @@ module.exports = class Utility{
             return answerPoint;        
         } 
         else {
-            // TODO change undefined
-            return undefined;
+            return false;
         }
     }
     // Checks for collision between a circle and rectangle
