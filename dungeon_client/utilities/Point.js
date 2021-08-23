@@ -3,7 +3,7 @@ module.exports = class Point {
             this.x=x
             this.y=y
     }
-    draw() {
+    draw() { 
         context.fillRect(this.position.x - 5, this.position.y - 5, 10, 10);
     }
 }
