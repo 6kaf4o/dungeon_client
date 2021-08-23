@@ -43,4 +43,19 @@ module.exports = class Utility{
             return undefined;
         }
     }
+    // Checks for collision between a circle and rectangle
+    rectCircleColliding(circle,rect){
+    let distX = Math.abs(circle.x - rect.pos.x - rect.size.x/2);
+    let distY = Math.abs(circle.y - rect.pos.y - rect.size.y/2);
+    let dx = distX-rect.size.x/2;
+    let dy = distY-rect.size.y/2;
+
+    if (distX > (rect.size.x/2 + circle.radius) || distY > (rect.size.y/2 + circle.radius)) {
+        return false; 
+    }
+
+    if ((distX < (rect.size.x/2) || distY < (rect.size.y/2)) || (dx * dx + dy * dy <= (circle.radius * circle.radius))) {
+        return true; 
+    }
+}
 }
