@@ -1,11 +1,11 @@
 class Projectile { // Abstract class, please don't create any objects of this type
-    constructor(x, y, deltaX, deltaY, damageScore){
+    constructor(x, y, deltaX, deltaY, damage){
         // TODO: Throw an error if initialized 
         this.x = x;
         this.y = y;
         this.deltaX = deltaX;
         this.deltaY = deltaY;
-        this.damageScore = damageScore;
+        this.damage = damage;
     }
     calculateDamage(){}
     update(){}
@@ -29,7 +29,7 @@ class Fireball extends Projectile {
         context.stroke();
     }
     calculateDamage() {
-        return this.damageScore;
+        return this.damage;
     }
     isColliding(rect){
         return rectCircleColliding(this, player);
