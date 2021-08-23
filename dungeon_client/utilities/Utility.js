@@ -2,7 +2,7 @@ module.exports = class Utility{
     constructor(){
     }
     // Returns true if there was no problem.
-    fixWallRayIntersection(line, ray, intersection) {
+    static fixWallRayIntersection(line, ray, intersection) {
         // This makes the light ray shine only in front of you
         let isBetweenx = false, isBetweeny = false;
         if((ray.end.x <= ray.begin.x && ray.begin.x <= intersection.x) || (ray.end.x >= ray.begin.x && ray.begin.x >= intersection.x)) {
@@ -28,7 +28,7 @@ module.exports = class Utility{
         return true;
     }
 
-    wallRayIntersection(wall, ray) {
+    static wallRayIntersection(wall, ray) {
         wall.recalculate();
         ray.recalculate();
         let x = (wall.b - ray.b) / (ray.m - wall.m);
@@ -44,7 +44,7 @@ module.exports = class Utility{
         }
     }
     // Checks for collision between a circle and rectangle
-    rectCircleColliding(circle,rect){
+    static rectCircleColliding(circle,rect){
         let distX = Math.abs(circle.x - rect.pos.x - rect.size.x/2);
         let distY = Math.abs(circle.y - rect.pos.y - rect.size.y/2);
         let dx = distX-rect.size.x/2;
