@@ -18,7 +18,7 @@ module.exports = class Lighting {
             // In this for we check for collisions with every wall
             for(this.i = 0; this.i < this.walls.length; this.i ++) {
                 // Current intersection is a holding variable that has a sole purpose to hold the result of the intersection check
-                this.currentIntersection = wallRayIntersection(this.walls[this.i], this.rotatedRay);
+                this.currentIntersection = Utility.wallRayIntersection(this.walls[this.i], this.rotatedRay);
                 // If a ray doesn't collide with a wall it is undefined
                 if(this.currentIntersection !== undefined) {
                     // We determine the distance of the light ray from the player to a wall
