@@ -1,4 +1,3 @@
-// The lighting class is used to find an amount of intersection points between rays cast from a certain points and an array of walls
 module.exports = class Lighting {
     // Takes an array of walls as a perimeter
     constructor(walls) {
