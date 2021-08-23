@@ -10,7 +10,7 @@ for (let i = 0; i < Math.random() * 4 + 1; i++) {
     walls.push(new Line(new Point(Math.random() * 300, Math.random() * 300), new Point(Math.random() * 300, Math.random() * 300)));
 }
 
-var p_spritesheet = new Sheet('./testchar', { rows: 4, columns: 4, width: 1601, height: 2397 })
+var p_spritesheet = new Sheet('./testchar', { rows: 4, columns: 4, width: 1601, height: 2397 });
 var p = new Player(new Point(100, 100), 20, [], 0, );
 var lighting = new Lighting(walls);
 
