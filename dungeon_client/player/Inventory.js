@@ -1,6 +1,6 @@
 module.exports = class Inventory {
-    constructor(size) {
-        this.size = size;
+    constructor(maxSize) {
+        this.maxSize = maxSize;
         this.weapons = [];
         this.ammo = [];
         this.items = [];
