@@ -3,7 +3,7 @@ const Point = require('/utilities/Point.js');
 module.exports = class Utility{
     constructor(){}
     static distance(a, b) {
-        return Math.hypot(a.x - b.x, a.y - b.x);
+        return Math.hypot(a.x - b.x, a.y - b.y);
     }
     // Returns true if there was no problem.
     static fixWallRayIntersection(line, ray, intersection) {
