@@ -16,7 +16,7 @@ module.exports = class Lighting {
             // This is a single intersection that will go into the intersections array later(if it gets a value)
             this.intersection = false;
             // Minimum distance defines the maximum length our light rays can have
-            this.minimumDistance = 10000;
+            this.minimumDistance = 100000000;
             // Just a ray rotated around the starting point by an angle amount
             this.rotatedRay = new Line(start, new Point(start.x + Math.cos(this.angle), start.y + Math.sin(this.angle)));
             // In this for we check for collisions with every wall

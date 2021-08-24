@@ -9,7 +9,7 @@ module.exports = class Player{
         this.delta = 0;
         // TODO wtf who wrote this code 
         // Author : Vladi...
-        this.spritesheet = new Sheet('images/bruh.png', 
+        this.spritesheet = new Sheet('./images/bruh.png', 
                         {rows:4, columns:4, width:408, height:611});
 
         this.health = health;
@@ -110,8 +110,7 @@ module.exports = class Player{
     }
     draw(){
         //--------------------->>> sprite draw <<<----------------------------------------\\
-        
-            // console.log(this.curimg , this.dir)
+
         switch(this.dir){
             case "up" :                         
                 Gamestate.context.drawImage(this.spritesheet.image , this.cursprite*this.spritesheet.w/this.spritesheet.x , this.sprite.up*this.spritesheet.h/this.spritesheet.y , this.spritesheet.w/this.spritesheet.x , this.spritesheet.h/this.spritesheet.y , this.position.x - this.size.x/2 , this.position.y - this.size.x/2, this.size.x , this.size.y)
@@ -129,6 +128,8 @@ module.exports = class Player{
                 Gamestate.context.drawImage(this.spritesheet.image , this.cursprite*this.spritesheet.w/this.spritesheet.x , this.sprite.right*this.spritesheet.h/this.spritesheet.y , this.spritesheet.w/this.spritesheet.x , this.spritesheet.h/this.spritesheet.y , this.position.x - this.size.x/2, this.position.y - this.size.x/2, this.size.x , this.size.y)
                 break;
         }
+        Gamestate.context.fillStyle = 'blue';
+        Gamestate.context.fillRect(this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
 
         //--------------------->>> sprite draw <<<----------------------------------------\\
 

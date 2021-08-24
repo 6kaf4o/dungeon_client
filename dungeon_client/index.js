@@ -5,20 +5,6 @@ const Lighting = require('/light/Lighting.js');
 const Gamestate = require('/framework/State.js');
 const Basegame = require('/framework/Framework.js');
 
-class Magic{
-    constructor(x,y,dx,dy){
-        this.x = x;
-        this.y = y;
-        this.dx = dx;
-        this.dy = dy;
-    }
-    draw(){
-        this.x += this.dx
-        this.y += this.dy
-        context.fillRect(this.x,this.y,20,20)
-    }
-}    
-
 class Game extends Basegame {
     constructor() {
         super();
@@ -46,11 +32,11 @@ class Game extends Basegame {
     }
 
     draw(){
-        Gamestate.context.fillStyle = "black"
-        Gamestate.context.fillRect(0, 0, Gamestate.canvas.width, Gamestate.canvas.height)
+        Gamestate.context.fillStyle = "black";
+        Gamestate.context.fillRect(0, 0, Gamestate.canvas.width, Gamestate.canvas.height);
         
-        Gamestate.context.fillStyle = "white"
-        Gamestate.context.beginPath()
+        Gamestate.context.fillStyle = "white";
+        Gamestate.context.beginPath();
         for(let i = 1 ; i < this.intersections.length ; i ++){
             Gamestate.context.lineTo(this.intersections[i].x, this.intersections[i].y)
         }

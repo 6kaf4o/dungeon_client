@@ -41,8 +41,7 @@ module.exports = class Utility{
         let answerPoint = new Point(x, y);
         if(this.fixWallRayIntersection(wall, ray, answerPoint)) {
             return answerPoint;        
-        } 
-        else {
+        } else {
             return false;
         }
     }
