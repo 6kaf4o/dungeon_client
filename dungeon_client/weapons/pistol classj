@@ -1,0 +1,34 @@
+class BasicGun extends Waepon{
+    //class for basicgun - pistol, which is the first waepon, that everyone will have when plays;
+    constructor(x,y,abletoshoot,t){
+        super(x,y);
+        this.b=[];
+        this.abletoshoot=abletoshoot;
+        this.t=t;
+    }
+    shoot(tX,tY) {
+                //strelqne kum koordinati tX i tY;
+        let angle = Math.atan2((tY - this.y), (tX - this.x));
+        this.b.push(new Bullet(this.x, this.y, Math.cos(angle) * 10, Math.sin(angle) * 10));
+    }
+    update(){
+        ++this.t;
+        if(this.t%100==0){
+            this.abletoshoot=true;
+        }
+        if(mouseDown==true){
+            if(this.abletoshoot==true){
+                this.shoot(mouseX,mouseY);
+                this.abletoshoot=false;
+            }
+        }
+    }
+    draw(){
+        context.fillStyle = "green";
+        context.fillRect(this.x,this.y,40,10);
+        for(let i=0; i<this.b.length;++i){
+       //     console.log(this.b[i].x,this.b[i].y);
+            context.fillRect(this.b[i].x,this.b[i].y,10,10);
+         }
+    }
+}
