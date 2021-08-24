@@ -1,9 +1,10 @@
-const Line = require('/utilities/Line.js');
-const Point = require('/utilities/Point.js');
 const Player = require('/player/Player.js');
 const Lighting = require('/light/Lighting.js');
 const Gamestate = require('/framework/State.js');
 const Basegame = require('/framework/Framework.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
+const Line = Geometry.Line;
 
 class Game extends Basegame {
     constructor() {

@@ -1,5 +1,6 @@
-const Line = require('/utilities/Line.js');
-const Point = require('/utilities/Point.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
+const Line = Geometry.Line;
 const Utility = require('/utilities/Utility.js')
 
 module.exports = class Lighting {

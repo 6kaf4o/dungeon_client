@@ -1,5 +1,7 @@
 const Gamestate = require('/framework/State.js');
-const Point = require('/utilities/Point.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
+const Line = Geometry.Line;
 
 module.exports = class Basegame { // Abstract class
     constructor() {}

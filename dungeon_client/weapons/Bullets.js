@@ -1,7 +1,8 @@
 const Gamestate = require('/framework/State.js');
 const Utility = require('/utilities/Utility.js');
-const Point = require('/utilities/Point.js');
-const Line = require('/utilities/Line.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
+const Line = Geometry.Line;
 
 class Projectile { // Abstract class, please don't create any objects of this type
     constructor(x, y, deltaX, deltaY, damage){

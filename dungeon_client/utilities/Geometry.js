@@ -1,7 +1,12 @@
-class Position {
-    constructor(x, y){
-        this.x = x;
-        this.y = y;
+const Gamestate = require('/framework/State.js');
+
+class Point {
+    constructor(x, y) {
+            this.x=x
+            this.y=y
+    }
+    draw() { 
+        Gamestate.context.fillRect(this.position.x - 5, this.position.y - 5, 10, 10);
     }
 }
 class Size {
@@ -10,18 +15,42 @@ class Size {
         this.height = height;
     }
 }
-class Rect {
-    constructor(x, y, width, height){
-        this.position = new Position(x, y);
-        this.size = new Size(width, height);
+class Line {
+    // Takes two points as parameters(begin and end), each of them has a x and y position
+    constructor(begin, end) {
+        this.begin = begin;
+        this.end = end;
+        this.recalculate();
+    }   
+    // Draws the line(if needed)
+    draw() {
+        Gamestate.context.beginPath();
+        Gamestate.context.lineTo(this.begin.x, this.begin.y);
+        Gamestate.context.lineTo(this.end.x, this.end.y);
+        Gamestate.context.stroke();
+    }
+    recalculate() {
+        // We check if the x coordinates of the starting and end point of the line, and if they are we move the starting point a bit to prevent an edge case
+        if(this.begin.x == this.end.x) {
+            this.begin.x += 0.1;            
+        }
+        // m and b are constants which help us determine a collision point between two lines 
+        this.m = (this.begin.y - this.end.y) / (this.begin.x - this.end.x);
+        this.b = this.begin.y - this.begin.x * this.m;
+    }
+}
+class Rectangle {
+    constructor(position, size) {
+        this.position = position;
+        this.size = size;
     }
     draw(){
         context.fillRect(this.position.x - (this.size.width/2), this.position.y - (this.size.height/2), this.size.width, this.size.height);
     }
 }
 class Circle {
-    constructor(x, y, radius){
-        this.position = new Position(x, y);
+    constructor(position, radius){
+        this.position = position;
         this.radius = radius;
     }
     draw(){
@@ -30,3 +59,10 @@ class Circle {
         context.fill();
     }
 }
+module.exports = {
+    Point : Point,
+    Size : Size,
+    Line : Line,
+    Rectangle : Rectangle,
+    Circle : Circle
+};

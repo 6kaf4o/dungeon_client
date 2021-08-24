@@ -1,4 +1,5 @@
-const Point = require('/utilities/Point.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
 
 module.exports = class Utility{
     constructor(){}
