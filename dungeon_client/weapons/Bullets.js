@@ -1,3 +1,8 @@
+const Gamestate = require('/framework/State.js');
+const Utility = require('/utilities/Utility.js');
+const Point = require('/utilities/Point.js');
+const Line = require('/utilities/Line.js');
+
 class Projectile { // Abstract class, please don't create any objects of this type
     constructor(x, y, deltaX, deltaY, damage){
         // TODO: Throw an error if initialized 
@@ -23,10 +28,10 @@ class Fireball extends Projectile {
         this.y += this.deltaY;
     }
     draw() {
-        context.beginPath();
-        context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
-        context.fill();
-        context.stroke();
+        Gamestate.context.beginPath();
+        Gamestate.context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.fill();
+        Gamestate.context.stroke();
     }
     calculateDamage() {
         return this.damage;
@@ -49,11 +54,11 @@ class Arrow extends Projectile {
         this.y += this.deltaY;
     }
     draw(){
-        context.save();
-        context.translate(this.x - (this.sizeX / 2), this.y - (this.sizeY / 2))
-        context.rotate(this.theta)
-        context.fillRect(-this.sizeX/2, -this.sizeY/2, this.sizeX, this.sizeY);
-        context.restore();
+        Gamestate.context.save();
+        Gamestate.context.translate(this.x - (this.sizeX / 2), this.y - (this.sizeY / 2))
+        Gamestate.context.rotate(this.theta)
+        Gamestate.context.fillRect(-this.sizeX/2, -this.sizeY/2, this.sizeX, this.sizeY);
+        Gamestate.context.restore();
     }
 }
 
@@ -71,10 +76,10 @@ class Bubble extends Projectile {
         this.deltaY = (this.deltaY / len) * newLen;
     }
     draw(){
-        context.beginPath();
-        context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
-        context.fill();
-        context.stroke();        
+        Gamestate.context.beginPath();
+        Gamestate.context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.fill();
+        Gamestate.context.stroke();        
     }
 
 }
@@ -100,16 +105,16 @@ class Grenade extends Projectile {
     }
     draw(){
             if(!this.boom){
-                context.save();
-                context.translate(this.x - (this.sizeX / 2), this.y - (this.sizeY / 2))
-                context.rotate(this.theta);
-                context.fillRect(-this.sizeX/2, -this.sizeY/2, this.sizeX, this.sizeY);
-                context.restore();
+                Gamestate.context.save();
+                Gamestate.context.translate(this.x - (this.sizeX / 2), this.y - (this.sizeY / 2))
+                Gamestate.context.rotate(this.theta);
+                Gamestate.context.fillRect(-this.sizeX/2, -this.sizeY/2, this.sizeX, this.sizeY);
+                Gamestate.context.restore();
             }else if(this.boom){
-                context.beginPath();
-                context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
-                context.fill();
-                context.stroke();     
+                Gamestate.context.beginPath();
+                Gamestate.context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
+                Gamestate.context.fill();
+                Gamestate.context.stroke();     
             }
     }
     explode(){
