@@ -21,14 +21,14 @@ class Game extends Basegame {
             this.walls.push (new Line(new Point(Math.random()*300 , Math.random()*300),new Point(Math.random()*300 , Math.random()*300)));
         }
 
-        this.p = new Player(new Point(100,100),20,[],0);
+        this.player = new Player(new Point(100,100),20,[],0);
 
         this.lighting = new Lighting(this.walls);
     }
 
     update() {
-        this.intersections = this.lighting.drawLight(this.p.position);
-        this.p.update();
+        this.intersections = this.lighting.drawLight(this.player.position);
+        this.player.update();
     }
 
     draw(){
@@ -41,7 +41,7 @@ class Game extends Basegame {
             Gamestate.context.lineTo(this.intersections[i].x, this.intersections[i].y)
         }
         Gamestate.context.fill()
-        this.lighting.drawLight(this.p.position)
+        this.lighting.drawLight(this.player.position)
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 3;
@@ -49,14 +49,11 @@ class Game extends Basegame {
             this.walls[i].draw();
         }
 
-        this.p.draw()
-        for(let i = 0 ; i < this.p.bullets ; i ++){
-            this.p.bullet[i].draw()
-        }
+        this.player.draw()
     }
 
     mouseup(){
-        this.p.shoot()
+        this.player.shoot();
     }
 }
 
