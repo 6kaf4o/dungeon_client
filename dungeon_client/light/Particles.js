@@ -33,8 +33,8 @@ class Particle{
 	};
 	static drawParticles() {
 for(let i=0; i<particles.length; i++) {
-		context.fillStyle=particles[i].colour;
-		context.fillRect(particles[i].x, particles[i].y, particles[i].size, particles[i].size);
+		game.context.fillStyle=particles[i].colour;
+		game.context.fillRect(particles[i].x, particles[i].y, particles[i].size, particles[i].size);
 		console.log(particles[i].x, particles[i].y, particles[i].size, particles[i].size)
 		}
 	} 

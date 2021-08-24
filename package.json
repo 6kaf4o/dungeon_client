@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "webpack": "^5.51.1"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.8.0"
+  }
+}

@@ -1,5 +1,9 @@
+const Point = require('/utilities/Point.js');
+
 module.exports = class Utility{
-    constructor(){
+    constructor(){}
+    static distance(a, b) {
+        return Math.hypot(a.x - b.x, a.y - b.x);
     }
     // Returns true if there was no problem.
     static fixWallRayIntersection(line, ray, intersection) {
@@ -35,7 +39,7 @@ module.exports = class Utility{
         let y = x * wall.m + wall.b;
         // The point of contact between the ray and wall
         let answerPoint = new Point(x, y);
-        if(fixWallRayIntersection(wall, ray, answerPoint)) {
+        if(this.fixWallRayIntersection(wall, ray, answerPoint)) {
             return answerPoint;        
         } 
         else {

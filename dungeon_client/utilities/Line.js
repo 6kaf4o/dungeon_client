@@ -1,3 +1,5 @@
+const Gamestate = require('/framework/State.js');
+
 module.exports = class Line {
     // Takes two points as parameters(begin and end), each of them has a x and y position
     constructor(begin, end) {
@@ -7,7 +9,10 @@ module.exports = class Line {
     }   
     // Draws the line(if needed)
     draw() {
-        drawLine(this.begin.x, this.begin.y, this.end.x, this.end.y);
+        Gamestate.context.beginPath();
+        Gamestate.context.lineTo(this.begin.x, this.begin.y);
+        Gamestate.context.lineTo(this.end.x, this.end.y);
+        Gamestate.context.stroke();
     }
     recalculate() {
         // We check if the x coordinates of the starting and end point of the line, and if they are we move the starting point a bit to prevent an edge case

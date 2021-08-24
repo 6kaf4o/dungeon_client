@@ -1,3 +1,7 @@
+const Line = require('/utilities/Line.js');
+const Point = require('/utilities/Point.js');
+const Utility = require('/utilities/Utility.js')
+
 module.exports = class Lighting {
     // Takes an array of walls as a perimeter
     constructor(walls) {
@@ -22,14 +26,14 @@ module.exports = class Lighting {
                 // If a ray doesn't collide with a wall their intersection is false
                 if(this.currentIntersection !== false) {
                     // We determine the distance of the light ray from the player to a wall
-                    if(this.minimumDistance > distance(this.currentIntersection, start)) {
+                    if(this.minimumDistance > Utility.distance(this.currentIntersection, start)) {
                         this.intersection = this.currentIntersection;
-                        this.minimumDistance = distance(this.currentIntersection, start);
+                        this.minimumDistance = Utility.distance(this.currentIntersection, start);
                     }
                 }
             }
             // We push an intersection of value into the intersections array
-            if(this.intersection != false) {
+            if(this.intersection !== false) {
                 this.intersections.push(this.intersection);
             }
         }
