@@ -1,0 +1,8 @@
+class Waepon{
+    //simple class with only constructor, that every waepon class extends;
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+        this.b=[];
+    }
+}
