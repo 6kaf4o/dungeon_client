@@ -45,6 +45,7 @@ module.exports = class Inventory {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
                 if(this.maxSize > i - 49) {
+                    this.getSelected().stopUsing();
                     this.selected = i - 49; // why are we still using event.keyCode
                 }
             }
