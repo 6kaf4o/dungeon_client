@@ -1,5 +1,7 @@
 const Bullets = require('/weapons/Bullets.js');
 const Utility = require('/utilities/Utility.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
 
 module.exports = class Weapon { // TODO: Abstract class
 	constructor() {
@@ -10,7 +12,7 @@ module.exports = class Weapon { // TODO: Abstract class
 		let dist = Utility.distance(shotFrom, shotTo);
 		let deltaX = (shotTo.x - shotFrom.x) / dist * 10;
 		let deltaY = (shotTo.y - shotFrom.y) / dist * 10;
-		this.bullets.push(new Bullets.Fireball(shotFrom.x, shotFrom.y, deltaX, deltaY, 69));
+		this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
 	}
 
 	update() {
