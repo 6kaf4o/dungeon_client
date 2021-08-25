@@ -37,7 +37,6 @@ module.exports = class Inventory {
         for(let i = 0; i < this.maxSize; i ++) {
             if(!this.content[i].empty) { 
                 this.content[i].item.draw();
-                Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
             }
         }
     }

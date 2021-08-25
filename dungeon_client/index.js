@@ -6,7 +6,7 @@ const Basegame = require('/framework/Framework.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
 const Line = Geometry.Line;
-const Weapon = require('/weapons/Weapon.js');
+const Weapons = require('/weapons/Weapon.js');
 
 class Game extends Basegame {
     constructor() {
@@ -24,9 +24,10 @@ class Game extends Basegame {
             this.walls.push (new Line(new Point(Math.random()*300 , Math.random()*300),new Point(Math.random()*300 , Math.random()*300)));
         }
 
-        this.player = new Player(new Point(100,100), 100, new Inventory(10), 0);
-        this.player.inventory.equipItem(new Weapon.BasicGun(this.player));
-
+        this.player = new Player(new Point(100,100), 20, new Inventory(10), 0);
+    //   this.player.inventory.equipItem(new Weapons.BasicGun(this.player,10));
+    //    this.player.inventory.equipItem(new Weapons.AK47(this.player,30));
+        this.player.inventory.equipItem(new Weapons.Shotgun(this.player,100));
         this.lighting = new Lighting(this.walls);
     }
 

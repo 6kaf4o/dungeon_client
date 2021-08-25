@@ -1,6 +1,6 @@
 const Sheet = require('/utilities/Sheet.js');
 const Gamestate = require('/framework/State.js');
-const Weapon = require('/weapons/Weapon');
+const Weapons = require('/weapons/Weapon.js');
 
 module.exports = class Player{
     constructor(position, health, inventory, id){
