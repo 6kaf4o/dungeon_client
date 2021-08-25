@@ -24,7 +24,7 @@ class Game extends Basegame {
             this.walls.push (new Line(new Point(Math.random()*300 , Math.random()*300),new Point(Math.random()*300 , Math.random()*300)));
         }
 
-        this.player = new Player(new Point(100,100), 20, new Inventory(10), 0);
+        this.player = new Player(new Point(100,100), 100, new Inventory(10), 0);
         this.player.inventory.equipItem(new Weapon.BasicGun(this.player));
 
         this.lighting = new Lighting(this.walls);
@@ -65,6 +65,13 @@ class Game extends Basegame {
 
     mouseup(){
         this.player.stopShooting();
+    }
+
+    keydown(key) {
+        if (key == 32) {
+            this.player.health -= 10;
+            console.log(this.player.health);
+        }
     }
 }
 

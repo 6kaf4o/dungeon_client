@@ -14,6 +14,7 @@ module.exports = class Player{
                         {rows:4, columns:4, width:408, height:611});
 
         this.health = health;
+        this.maxHealth = health;
         this.sprite = {
             left:[],
             right:[],
@@ -130,6 +131,11 @@ module.exports = class Player{
         }
         Gamestate.context.fillStyle = 'blue';
         Gamestate.context.fillRect(this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
+        let healthBarSize = this.size.x * this.maxHealth / 50;
+        Gamestate.context.fillStyle = 'red';
+        Gamestate.context.fillRect(this.position.x - healthBarSize / 2, this.position.y - this.size.y / 2 - this.size.y / 10, healthBarSize, this.size.y / 20);
+        Gamestate.context.fillStyle = 'green';
+        Gamestate.context.fillRect(this.position.x - healthBarSize / 2, this.position.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
         this.inventory.draw();
