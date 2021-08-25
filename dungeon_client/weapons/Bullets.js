@@ -5,12 +5,10 @@ const Point = Geometry.Point;
 const Line = Geometry.Line;
 
 class Projectile { // Abstract class, please don't create any objects of this type
-    constructor(x, y, deltaX, deltaY, damage){
+    constructor(position, delta, damage){
         // TODO: Throw an error if initialized 
-        this.x = x;
-        this.y = y;
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
+        this.position = position;
+        this.delta = delta;
         this.damage = damage;
     }
     calculateDamage(){}
@@ -20,17 +18,17 @@ class Projectile { // Abstract class, please don't create any objects of this ty
 }
 
 class Fireball extends Projectile {
-    constructor(x, y, deltaX, deltaY, damage, radius = 15) {
-        super(x, y, deltaX, deltaY, damage);
+    constructor(position, delta, damage, radius = 15) {
+        super(position, delta, damage);
         this.radius = radius;
     }
     update() {   
-        this.x += this.deltaX;
-        this.y += this.deltaY;
+        this.position.x += this.delta.x;
+        this.position.y += this.delta.y;
     }
     draw() {
         Gamestate.context.beginPath();
-        Gamestate.context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
         Gamestate.context.stroke();
     }
@@ -43,42 +41,43 @@ class Fireball extends Projectile {
 }
 
 class Arrow extends Projectile {
-    constructor(x, y, deltaX, deltaY, damage, sizeX = 20, sizeY = 5){
-        super(x, y, deltaX, deltaY, damage);
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
-        this.theta = Math.atan2(deltaY,deltaX);
+    constructor(position, delta, damage, width = 20, height = 5){
+        super(position, delta, damage);
+        this.size = new Size(width, height);
+        this.theta = Math.atan2(this.delta.x, this.delta.y);
 
     }
     update() {   
-        this.x += this.deltaX;
-        this.y += this.deltaY;
+        this.position.x += this.delta.x;
+        this.position.y += this.delta.y;
     }
     draw(){
         Gamestate.context.save();
-        Gamestate.context.translate(this.x - (this.sizeX / 2), this.y - (this.sizeY / 2))
+        Gamestate.context.translate(this.position.x - (this.size.width / 2), this.position.y - (this.size.height / 2))
         Gamestate.context.rotate(this.theta)
-        Gamestate.context.fillRect(-this.sizeX/2, -this.sizeY/2, this.sizeX, this.sizeY);
+        Gamestate.context.fillRect(-this.size.width/2, -this.size.height/2, this.size.width, this.size.height);
         Gamestate.context.restore();
     }
 }
 
 class Bubble extends Projectile {
-    constructor(x, y, deltaX, deltaY, damage, radius = 20){
-        super(x, y, deltaX, deltaY, damage);
+    constructor(position, delta, damage, radius = 20){
+        super(position, delta, damage);
         this.radius = radius;
     }
     update(){
-        this.x += this.deltaY;
-        this.y += this.deltaX;
-        let len = Math.sqrt(this.deltaX * this.deltaX + this.deltaY * this.deltaY);
-        let newLen = len - 0.04;
-        this.deltaX = (this.deltaX / len) * newLen;
-        this.deltaY = (this.deltaY / len) * newLen;
+        if(this.delta.x < 0.25 || this.delta.y < 0.25){
+            this.position.x += this.delta.y;
+            this.position.y += this.delta.x;
+            let len = Math.sqrt(this.delta.x * this.delta.x + this.delta.y * this.delta.y);
+            let newLen = len - 0.04;
+            this.delta.x = (this.delta.x / len) * newLen;
+            this.delta.y = (this.delta.y / len) * newLen;
+        }
     }
     draw(){
         Gamestate.context.beginPath();
-        Gamestate.context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
         Gamestate.context.stroke();        
     }
@@ -86,19 +85,18 @@ class Bubble extends Projectile {
 }
 
 class Grenade extends Projectile {
-    constructor(x, y, deltaX, deltaY, damage, sizeX = 25, sizeY = 6, radius = 10){
-        super(x, y, deltaX, deltaY, damage);
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+    constructor(position, delta, damage, width = 25, height = 6, radius = 10){
+        super(position, delta, damage);
+        this.size = new Size(width, height)
         this.radius = radius;
-        this.theta = Math.atan2(deltaY,deltaX);
+        this.theta = Math.atan2(this.delta.x, this.delta.y);
         this.boom = false;
 
     }
     update(){
         if(!this.boom){
-        this.x += this.deltaX;
-        this.y += this.deltaY;
+        this.position.x += this.delta.x;
+        this.position.y += this.delta.y;
         }
         if(this.boom && this.radius <= 100){
             this.radius += 2;
@@ -107,13 +105,13 @@ class Grenade extends Projectile {
     draw(){
             if(!this.boom){
                 Gamestate.context.save();
-                Gamestate.context.translate(this.x - (this.sizeX / 2), this.y - (this.sizeY / 2))
+                Gamestate.context.translate(this.position.x - (this.size.width / 2), this.position.y - (this.size.height / 2))
                 Gamestate.context.rotate(this.theta);
-                Gamestate.context.fillRect(-this.sizeX/2, -this.sizeY/2, this.sizeX, this.sizeY);
+                Gamestate.context.fillRect(-this.size.width/2, -this.size.height/2, this.size.width, this.size.height);
                 Gamestate.context.restore();
             }else if(this.boom){
                 Gamestate.context.beginPath();
-                Gamestate.context.arc(this.x, this.y, this.radius, 2 * Math.PI, 0);
+                Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
                 Gamestate.context.fill();
                 Gamestate.context.stroke();     
             }
