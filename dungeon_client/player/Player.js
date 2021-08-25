@@ -46,12 +46,9 @@ module.exports = class Player{
         }
 
         this.itr = 0;
-        this.weapon = new Weapon();
     }
     update(){
         let movx = false , movy = false
-
-        this.weapon.update();
 
         if(Gamestate.isKeyPressed[65]){
 
@@ -108,6 +105,8 @@ module.exports = class Player{
             this.cursprite = 0;
         }
         //--------------------->>> Sprite management <<<----------------------------------------\\
+
+        this.inventory.update();
     }
     draw(){
         //--------------------->>> sprite draw <<<----------------------------------------\\
@@ -131,12 +130,16 @@ module.exports = class Player{
         }
         Gamestate.context.fillStyle = 'blue';
         Gamestate.context.fillRect(this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
-        this.weapon.draw();
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-
+        this.inventory.draw();
     }
-    shoot(){
-        this.weapon.shoot(this.position, Gamestate.mousePosition);
+
+    startShooting() {
+        this.inventory.getSelected().startShooting();
+    }
+
+    stopShooting() {
+        this.inventory.getSelected().stopShooting();
     }
 }

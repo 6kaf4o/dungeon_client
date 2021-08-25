@@ -4,7 +4,7 @@ module.exports = class Sheet {
     constructor(imageSrc, properties) {
         this.image = new Image();
         this.image.src = imageSrc;
-        console.log(this.image);
+
         this.rows = properties.rows;
         this.columns = properties.columns;
         this.imageWidth = properties.width;

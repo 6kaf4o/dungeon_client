@@ -1,10 +1,14 @@
 const Gamestate = require('../framework/State.js');
+const InventoryItems = require('/player/InventoryItems.js');
 
 module.exports = class Inventory {
     constructor(maxSize) {
         this.maxSize = maxSize;
         if (this.maxSize > 9) this.maxSize = 9;
-        this.content = new Array(maxSize);
+        this.content = [];
+        for(let i = 0; i < this.maxSize; i ++) {
+            this.content[i] = new InventoryItems.Itemslot();
+        }
         this.selected = 0; // index in this.content
         this.ammo = [];
     }
@@ -29,11 +33,41 @@ module.exports = class Inventory {
             Gamestate.context.lineTo(w / 2 - i * slotSize, h);
             Gamestate.context.stroke();
         }
+
+        for(let i = 0; i < this.maxSize; i ++) {
+            if(!this.content[i].empty) {
+                this.content[i].item.draw();
+            }
+        }
     }
 
     update() {
         for (let i = 49; i <= 57; i++) { // event.keyCode
-            if (Gamestate.isKeyPressed[i]) this.selected = i - 49; // why are we still using event.keyCode
+            if (Gamestate.isKeyPressed[i]) {
+                if(this.maxSize > i - 49) {
+                    this.selected = i - 49; // why are we still using event.keyCode
+                }
+            }
         }
+
+        for(let i = 0; i < this.maxSize; i ++) {
+            if(!this.content[i].empty) {
+                this.content[i].item.update();
+            }
+        }
+    }
+
+    getSelected() {
+        return this.content[this.selected].item;
+    }
+
+    equipItem(item) {
+        for(let i = 0; i < this.maxSize; i ++) {
+            if(this.content[i].empty) {
+                this.content[i].equip(item);
+                return true;
+            }
+        }
+        return false;
     }
 }
