@@ -1,9 +1,11 @@
 {
   "dependencies": {
+    "nodemon": "^2.0.12",
     "webpack": "^5.51.1"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build_cont": "nodemon --watch dungeon_client -e js --exec webpack"
   },
   "devDependencies": {
     "webpack-cli": "^4.8.0"
