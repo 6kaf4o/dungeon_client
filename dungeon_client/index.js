@@ -1,4 +1,5 @@
 const Player = require('/player/Player.js');
+const Inventory = require('/player/Inventory.js');
 const Lighting = require('/light/Lighting.js');
 const Gamestate = require('/framework/State.js');
 const Basegame = require('/framework/Framework.js');
@@ -22,7 +23,7 @@ class Game extends Basegame {
             this.walls.push (new Line(new Point(Math.random()*300 , Math.random()*300),new Point(Math.random()*300 , Math.random()*300)));
         }
 
-        this.player = new Player(new Point(100,100),20,[],0);
+        this.player = new Player(new Point(100,100), 20, new Inventory(10), 0);
 
         this.lighting = new Lighting(this.walls);
     }
@@ -30,6 +31,7 @@ class Game extends Basegame {
     update() {
         this.intersections = this.lighting.drawLight(this.player.position);
         this.player.update();
+        this.player.inventory.update();
     }
 
     draw(){
@@ -50,7 +52,9 @@ class Game extends Basegame {
             this.walls[i].draw();
         }
 
-        this.player.draw()
+        this.player.draw();
+        this.player.inventory.draw();
+
     }
 
     mouseup(){
