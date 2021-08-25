@@ -15,7 +15,7 @@ module.exports = class Inventory {
 
     draw() {
         const w = Gamestate.canvas.width, h = Gamestate.canvas.height;
-        Gamestate.context.globalAlpha = 0.8;
+        Gamestate.context.globalAlpha = 0.5;
         Gamestate.context.fillStyle = 'black';
         const slotSize = w / 16;
         Gamestate.context.fillRect(w / 2 - this.maxSize * slotSize / 2, h - slotSize, this.maxSize * slotSize, slotSize);
@@ -35,8 +35,9 @@ module.exports = class Inventory {
         }
 
         for(let i = 0; i < this.maxSize; i ++) {
-            if(!this.content[i].empty) {
+            if(!this.content[i].empty) { 
                 this.content[i].item.draw();
+                Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
             }
         }
     }

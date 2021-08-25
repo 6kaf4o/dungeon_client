@@ -36,6 +36,8 @@ class BasicGun extends Weapon{
 	constructor(owner) {
 		super(owner);
 		this.alreadyShot = false;
+		this.sprite = new Image();
+		this.sprite.src = '../production/images/pistol.png';
 	}
 
 	startUsing() {
@@ -78,6 +80,8 @@ class AK47 extends Weapon{
         this.abletoshoot=abletoshoot;
         this.cooldown=cooldown;
 		this.mousehold=mousehold;
+		this.sprite = new Image();
+		this.sprite.src = '../production/images/pistol.png';
     }
 	shoot(shotFrom, shotTo) {
 		if(!this.abletoshoot) {return;}
