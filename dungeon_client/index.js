@@ -60,19 +60,14 @@ class Game extends Basegame {
     }
 
     mousedown() {
-        this.player.startShooting();
+        this.player.startUsing();
     }
 
     mouseup(){
-        this.player.stopShooting();
+        this.player.stopUsing();
     }
 
-    keydown(key) {
-        if (key == 32) {
-            this.player.health -= 10;
-            console.log(this.player.health);
-        }
-    }
+    keydown(key) {}
 }
 
 let game = new Game();
