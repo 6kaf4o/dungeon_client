@@ -12,8 +12,8 @@ class Weapon { // TODO: Abstract class
 		this.owner = owner;
 	}
 		
-	startShooting() {}
-	stopShooting() {}
+	startUsing() {}
+	stopUsing() {}
 
 	equip(newOwner) {this.owner = owner;}
 	unequip() {}
@@ -38,10 +38,10 @@ class BasicGun extends Weapon{
 		this.alreadyShot = false;
 	}
 
-	startShooting() {
+	startUsing() {
 		this.alreadyShot = false;
 	}
-	stopShooting() {}
+	stopUsing() {}
 
 	update() {
 		if(!this.alreadyShot) {

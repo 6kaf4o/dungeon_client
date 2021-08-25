@@ -135,11 +135,11 @@ module.exports = class Player{
         this.inventory.draw();
     }
 
-    startShooting() {
-        this.inventory.getSelected().startShooting();
+    startUsing() {
+        this.inventory.startUsing();
     }
 
-    stopShooting() {
-        this.inventory.getSelected().stopShooting();
+    stopUsing() {
+        this.inventory.stopUsing();
     }
 }

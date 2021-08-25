@@ -70,4 +70,18 @@ module.exports = class Inventory {
         }
         return false;
     }
+
+    startUsing() {
+        if(this.content[this.selected].empty) {
+            return;
+        }
+        this.content[this.selected].item.startUsing();
+    }
+
+    stopUsing() {
+        if(this.content[this.selected].empty) {
+            return;
+        }
+        this.content[this.selected].item.stopUsing();
+    }
 }
