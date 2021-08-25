@@ -1001,9 +1001,11 @@ class Game extends Basegame {
         }
 
         this.player = new Player(new Point(100,100), 20, new Inventory(10), 0);
-    //   this.player.inventory.equipItem(new Weapons.BasicGun(this.player,10));
-    //    this.player.inventory.equipItem(new Weapons.AK47(this.player,30));
+        
+        this.player.inventory.equipItem(new Weapons.BasicGun(this.player,10));
+        this.player.inventory.equipItem(new Weapons.AK47(this.player,30));
         this.player.inventory.equipItem(new Weapons.Shotgun(this.player,100));
+        
         this.lighting = new Lighting(this.walls);
     }
 
