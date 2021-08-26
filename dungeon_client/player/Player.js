@@ -4,6 +4,7 @@ const Weapons = require('/weapons/Weapon.js');
 const Utility = require('/utilities/Utility.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
+const Maze = require('/utilities/Maze.js');
 
 module.exports = class Player{
     constructor(position, health, inventory, id){
@@ -51,7 +52,7 @@ module.exports = class Player{
 
         this.itr = 0;
     }
-    update(walls){
+    update(){
         let movx = false , movy = false
 
         if (Gamestate.isKeyPressed[65]) {
@@ -59,7 +60,7 @@ module.exports = class Player{
             if (!Utility.boxWallsColliding(
                 new Point((this.position.x - this.size.x / 2) - this.delta, 
                 this.position.y - this.size.y / 2), 
-            this.size.x, this.size.y, walls)) {
+                this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "left"
                 this.position.x -= this.delta
                 movx = true
@@ -69,7 +70,8 @@ module.exports = class Player{
             if (!Utility.boxWallsColliding(
                 new Point((this.position.x - this.size.x / 2) + this.delta,
                 this.position.y - this.size.y / 2), 
-            this.size.x, this.size.y, walls)) {
+                this.size.x, this.size.y, Maze.walls)) {
+                
                 this.dir = "right"
                 this.position.x += this.delta
                 movx = true
@@ -83,7 +85,7 @@ module.exports = class Player{
             if (!Utility.boxWallsColliding(
                 new Point(this.position.x - this.size.x / 2,
                 (this.position.y - this.size.y / 2) - this.delta), 
-            this.size.x, this.size.y, walls)) {
+            this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "up"
                 this.position.y -= this.delta
                 movy = true
@@ -93,7 +95,7 @@ module.exports = class Player{
             if (!Utility.boxWallsColliding(
                 new Point(this.position.x - this.size.x / 2, 
                 (this.position.y - this.size.y / 2) + this.delta), 
-            this.size.x, this.size.y, walls)) {
+            this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "down"
                 this.position.y += this.delta
                 movy = true
