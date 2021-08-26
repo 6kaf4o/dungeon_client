@@ -62,7 +62,7 @@ module.exports = class Player{
                 this.position.y - this.size.y / 2), 
                 this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "left"
-                this.position.x -= this.delta / Gamestate.deltaTime;
+                this.position.x -= this.delta /* / Gamestate.deltaTime */;
                 movx = true
                 this.delta += 0.1
             }
@@ -73,7 +73,7 @@ module.exports = class Player{
                 this.size.x, this.size.y, Maze.walls)) {
                 
                 this.dir = "right"
-                this.position.x += this.delta / Gamestate.deltaTime;
+                this.position.x += this.delta /* / Gamestate.deltaTime */;
                 movx = true
                 this.delta += 0.1
             }
@@ -87,7 +87,7 @@ module.exports = class Player{
                 (this.position.y - this.size.y / 2) - this.delta), 
             this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "up"
-                this.position.y -= this.delta / Gamestate.deltaTime;
+                this.position.y -= this.delta /* / Gamestate.deltaTime */;
                 movy = true
                 this.delta += 0.1
             }
@@ -97,7 +97,7 @@ module.exports = class Player{
                 (this.position.y - this.size.y / 2) + this.delta), 
             this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "down"
-                this.position.y += this.delta / Gamestate.deltaTime;
+                this.position.y += this.delta /* / Gamestate.deltaTime */;
                 movy = true
                 this.delta += 0.1
             }
