@@ -5,7 +5,7 @@ const Player = require('/player/Player.js');
 const Point = Geometry.Point;
 const Line = Geometry.Line;
 const Gamestate = require('/framework/State.js');
-
+const Maze = require('/utilities/Maze.js');
 class Weapons { // TODO: Abstract class
 	constructor(owner, reloadRate) {
 		this.bullets = [];
@@ -52,6 +52,13 @@ class BasicGun extends Weapons{
 		for(let i = 0; i < this.bullets.length; i ++) {
 			this.bullets[i].update();
 		}	
+		for(let i = 0; i < this.bullets.length; i++) {
+				if(Utility.boxWallsColliding(this.bullets[i].position,10,10,Maze.walls)){
+					this.bullets[i] = this.bullets[this.bullets.length-1];
+					this.bullets.pop();
+					--i;
+				}
+		}
 		this.cooldown--;
 
 		if(this.cooldown > 0) {return;}
@@ -96,7 +103,13 @@ class AK47 extends Weapons{
 		for(let i = 0; i < this.bullets.length; i ++) {
 			this.bullets[i].update();
 		}	
-
+		for(let i = 0; i < this.bullets.length; i++) {
+			if(Utility.boxWallsColliding(this.bullets[i].position,10,10,Maze.walls)){
+				this.bullets[i] = this.bullets[this.bullets.length-1];
+				this.bullets.pop();
+				--i;
+			}
+	}
 		this.cooldown --;
 		if(this.cooldown > 0) {return;}
 
@@ -129,7 +142,7 @@ class Shotgun extends Weapons{
 		this.sprite = new Image();
 		this.sprite.src = '../production/images/shotgun.png';
 	}
-
+	
 	startUsing() {
 		this.alreadyShot = false;
 	}
@@ -140,7 +153,13 @@ class Shotgun extends Weapons{
 		for(let i = 0; i < this.bullets.length; i ++) {
 			this.bullets[i].update();
 		}
-
+		for(let i = 0; i < this.bullets.length; i++) {
+			if(Utility.boxWallsColliding(this.bullets[i].position,10,10,Maze.walls)){
+				this.bullets[i] = this.bullets[this.bullets.length-1];
+				this.bullets.pop();
+				--i;
+			}
+	}
 		this.cooldown--;	
 
 		if(this.cooldown > 0) {return;}
