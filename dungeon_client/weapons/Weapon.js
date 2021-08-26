@@ -3,9 +3,11 @@ const Utility = require('/utilities/Utility.js');
 const Geometry = require('/utilities/Geometry.js');
 const Player = require('/player/Player.js');
 const Point = Geometry.Point;
+const Size = Geometry.Size;
 const Line = Geometry.Line;
 const Gamestate = require('/framework/State.js');
 const Maze = require('/utilities/Maze.js');
+const { context, mousePosition } = require('../framework/State');
 class Weapons { // TODO: Abstract class
 	constructor(owner, reloadRate,ammo) {
 		this.bullets = [];
@@ -49,6 +51,20 @@ class Weapons { // TODO: Abstract class
 
 	draw() {
 		for (let i of this.bullets) i.draw();
+	}
+
+	/**
+	 * @param {Point} position 
+	 * @param {Size} size 
+	 */
+	drawImg(position, size) {
+		if (this.owner) {
+			Gamestate.context.save();
+			Gamestate.context.translate(this.owner.position.x, this.owner.position.y);
+			Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - this.owner.position.y, Gamestate.mousePosition.x - this.owner.position.x));
+			Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 2.5, size.width, size.height);
+			Gamestate.context.restore();
+		} else Gamestate.context.drawImage(this.sprite, position.x, position.y, size.x, size.y);
 	}
 }
 
