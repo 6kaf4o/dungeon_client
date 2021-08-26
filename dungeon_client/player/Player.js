@@ -161,7 +161,6 @@ module.exports = class Player {
         Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-        console.log("Player cam : ", camera)
         this.inventory.draw(camera);
     }
 

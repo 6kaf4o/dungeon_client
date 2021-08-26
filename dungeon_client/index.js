@@ -47,15 +47,14 @@ class Game extends Basegame {
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
-        console.log(this.camera);
         this.player.draw(this.camera);
         for (let i = 0; i < Maze.walls.length; i++) {
             Maze.walls[i].draw(this.camera);
         }
 
-        this.player.draw();
+        this.player.draw(this.camera);
 
-        this.player.inventory.getSelected().drawImg(this.player.position, new Size(100, 100));
+        this.player.inventory.getSelected().drawImg(this.player.position, new Size(75, 75), this.camera);
     }
 
     mousedown() {

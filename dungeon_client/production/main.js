@@ -229,7 +229,6 @@ module.exports = class Inventory {
 
         for (let i = 0; i < this.maxSize; i++) {
             if (!this.content[i].empty) {
-                console.log("Inventory cam :", camera)
                 this.content[i].item.draw(cam);
                 Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
             }
@@ -485,7 +484,6 @@ module.exports = class Player {
         Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-        console.log("Player cam : ", camera)
         this.inventory.draw(camera);
     }
 
@@ -953,21 +951,20 @@ class Weapons { // TODO: Abstract class
     }
 
     draw(camera) {
-            console.log("Weapon cam : ", camera)
             for (let i of this.bullets) {
                 i.draw(camera);
-                console.log(i);
             }
         }
         /**
          * @param {Point} position 
          * @param {Size} size 
          */
-    drawImg(position, size) {
+    drawImg(position, size, camera) {
         if (this.owner) {
+			let drawpos = camera.calculate_pos(this.owner.position);
             Gamestate.context.save();
-            Gamestate.context.translate(this.owner.position.x, this.owner.position.y);
-            Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - this.owner.position.y, Gamestate.mousePosition.x - this.owner.position.x));
+            Gamestate.context.translate(drawpos.x, drawpos.y);
+            Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - drawpos.y, Gamestate.mousePosition.x - drawpos.x));
             Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 2.5, size.width, size.height);
             Gamestate.context.restore();
         } else Gamestate.context.drawImage(this.sprite, position.x, position.y, size.x, size.y);
@@ -1176,15 +1173,14 @@ class Game extends Basegame {
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
-        console.log(this.camera);
         this.player.draw(this.camera);
         for (let i = 0; i < Maze.walls.length; i++) {
             Maze.walls[i].draw(this.camera);
         }
 
-        this.player.draw();
+        this.player.draw(this.camera);
 
-        this.player.inventory.getSelected().drawImg(this.player.position, new Size(100, 100));
+        this.player.inventory.getSelected().drawImg(this.player.position, new Size(75, 75), this.camera);
     }
 
     mousedown() {

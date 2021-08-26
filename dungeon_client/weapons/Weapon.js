@@ -50,21 +50,20 @@ class Weapons { // TODO: Abstract class
     }
 
     draw(camera) {
-            console.log("Weapon cam : ", camera)
             for (let i of this.bullets) {
                 i.draw(camera);
-                console.log(i);
             }
         }
         /**
          * @param {Point} position 
          * @param {Size} size 
          */
-    drawImg(position, size) {
+    drawImg(position, size, camera) {
         if (this.owner) {
+			let drawpos = camera.calculate_pos(this.owner.position);
             Gamestate.context.save();
-            Gamestate.context.translate(this.owner.position.x, this.owner.position.y);
-            Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - this.owner.position.y, Gamestate.mousePosition.x - this.owner.position.x));
+            Gamestate.context.translate(drawpos.x, drawpos.y);
+            Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - drawpos.y, Gamestate.mousePosition.x - drawpos.x));
             Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 2.5, size.width, size.height);
             Gamestate.context.restore();
         } else Gamestate.context.drawImage(this.sprite, position.x, position.y, size.x, size.y);
