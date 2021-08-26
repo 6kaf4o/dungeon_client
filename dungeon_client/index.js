@@ -20,16 +20,16 @@ class Game extends Basegame {
         this.walls.push(new Line(new Point(800, 600), new Point(0, 600)));
         this.walls.push(new Line(new Point(0, 0), new Point(0, 600, 1)));
 
-        for(let i = 0 ; i < Math.random()*4+1 ; i ++){
-            this.walls.push (new Line(new Point(Math.random()*300 , Math.random()*300),new Point(Math.random()*300 , Math.random()*300)));
+        for (let i = 0; i < Math.random() * 4 + 1; i++) {
+            this.walls.push(new Line(new Point(Math.random() * 300, Math.random() * 300), new Point(Math.random() * 300, Math.random() * 300)));
         }
 
-        this.player = new Player(new Point(100,100), 20, new Inventory(10), 0);
-        
-        this.player.inventory.equipItem(new Weapons.BasicGun(this.player,10));
-        this.player.inventory.equipItem(new Weapons.AK47(this.player,30));
-        this.player.inventory.equipItem(new Weapons.Shotgun(this.player,100));
-        
+        this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
+
+        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 10));
+        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30));
+        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 100));
+
         this.lighting = new Lighting(this.walls);
     }
 
@@ -39,13 +39,13 @@ class Game extends Basegame {
         this.player.inventory.update();
     }
 
-    draw(){
+    draw() {
         Gamestate.context.fillStyle = "black";
         Gamestate.context.fillRect(0, 0, Gamestate.canvas.width, Gamestate.canvas.height);
-        
+
         Gamestate.context.fillStyle = "white";
         Gamestate.context.beginPath();
-        for(let i = 1 ; i < this.intersections.length ; i ++){
+        for (let i = 1; i < this.intersections.length; i++) {
             Gamestate.context.lineTo(this.intersections[i].x, this.intersections[i].y)
         }
         Gamestate.context.fill()
@@ -53,7 +53,7 @@ class Game extends Basegame {
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 3;
-        for(let i = 0 ; i < this.walls.length ; i ++){        
+        for (let i = 0; i < this.walls.length; i++) {
             this.walls[i].draw();
         }
 
@@ -66,11 +66,11 @@ class Game extends Basegame {
         this.player.startUsing();
     }
 
-    mouseup(){
+    mouseup() {
         this.player.stopUsing();
     }
 
-    keydown(key) {}
+    keydown(key) { }
 }
 
 let game = new Game();
