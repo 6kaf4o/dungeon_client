@@ -22,8 +22,8 @@ class BasicBullet extends Projectile {
         this.radius = radius;
     }
     update() {   
-        this.position.x += this.delta.x;
-        this.position.y += this.delta.y;
+        this.position.x += this.delta.x * Gamestate.deltaTime / 3;
+        this.position.y += this.delta.y * Gamestate.deltaTime / 3;
     }
     draw() {
         Gamestate.context.beginPath();
