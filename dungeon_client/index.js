@@ -16,13 +16,10 @@ class Game extends Basegame {
         this.intersections = [];
 
         this.walls.push(new Line(new Point(0, 0), new Point(800, 0)));
-        this.walls.push(new Line(new Point(800, 600), new Point(800, 0)));
-        this.walls.push(new Line(new Point(800, 600), new Point(0, 600)));
-        this.walls.push(new Line(new Point(0, 0), new Point(0, 600, 1)));
-
-        for (let i = 0; i < Math.random() * 4 + 1; i++) {
-            this.walls.push(new Line(new Point(Math.random() * 300, Math.random() * 300), new Point(Math.random() * 300, Math.random() * 300)));
-        }
+        this.walls.push(new Line(new Point(800, 0), new Point(800, 600)));
+        this.walls.push(new Line(new Point(0, 600), new Point(800, 600)));
+        this.walls.push(new Line(new Point(0, 0), new Point(0, 600)));
+        this.walls.push(new Line(new Point(300, 100), new Point(300, 300)));
 
         this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
 
@@ -35,7 +32,7 @@ class Game extends Basegame {
 
     update() {
         this.intersections = this.lighting.drawLight(this.player.position);
-        this.player.update();
+        this.player.update(this.walls);
         this.player.inventory.update();
     }
 
@@ -52,7 +49,7 @@ class Game extends Basegame {
         this.lighting.drawLight(this.player.position)
 
         Gamestate.context.strokeStyle = "red"
-        Gamestate.context.lineWidth = 3;
+        Gamestate.context.lineWidth = 1;
         for (let i = 0; i < this.walls.length; i++) {
             this.walls[i].draw();
         }
@@ -70,7 +67,7 @@ class Game extends Basegame {
         this.player.stopUsing();
     }
 
-    keydown(key) { }
+    keydown(key) {  }
 }
 
 let game = new Game();
