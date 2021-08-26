@@ -806,7 +806,7 @@ class Arrow extends Projectile {
     constructor(position, delta, damage, width = 20, height = 5) {
         super(position, delta, damage);
         this.size = new Size(width, height);
-        this.theta = Math.atan2(this.delta.x, this.delta.y);
+        this.theta = Math.atan2(this.delta.y, this.delta.x);
 
     }
     update() {
@@ -906,9 +906,11 @@ const Utility = __webpack_require__(580);
 const Geometry = __webpack_require__(322);
 const Player = __webpack_require__(94);
 const Point = Geometry.Point;
+const Size = Geometry.Size;
 const Line = Geometry.Line;
 const Gamestate = __webpack_require__(147);
 const Maze = __webpack_require__(864);
+const { context, mousePosition } = __webpack_require__(147);
 class Weapons { // TODO: Abstract class
     constructor(owner, reloadRate, ammo) {
         this.bullets = [];
@@ -951,11 +953,24 @@ class Weapons { // TODO: Abstract class
     }
 
     draw(camera) {
-        console.log("Weapon cam : ", camera)
-        for (let i of this.bullets) {
-            i.draw(camera);
-            console.log(i);
+            console.log("Weapon cam : ", camera)
+            for (let i of this.bullets) {
+                i.draw(camera);
+                console.log(i);
+            }
         }
+        /**
+         * @param {Point} position 
+         * @param {Size} size 
+         */
+    drawImg(position, size) {
+        if (this.owner) {
+            Gamestate.context.save();
+            Gamestate.context.translate(this.owner.position.x, this.owner.position.y);
+            Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - this.owner.position.y, Gamestate.mousePosition.x - this.owner.position.x));
+            Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 2.5, size.width, size.height);
+            Gamestate.context.restore();
+        } else Gamestate.context.drawImage(this.sprite, position.x, position.y, size.x, size.y);
     }
 }
 
@@ -1120,6 +1135,7 @@ const Gamestate = __webpack_require__(147);
 const Basegame = __webpack_require__(313);
 const Geometry = __webpack_require__(322);
 const Point = Geometry.Point;
+const Size = Geometry.Size;
 const Line = Geometry.Line;
 const Weapons = __webpack_require__(45);
 const Maze = __webpack_require__(864);
@@ -1165,6 +1181,10 @@ class Game extends Basegame {
         for (let i = 0; i < Maze.walls.length; i++) {
             Maze.walls[i].draw(this.camera);
         }
+
+        this.player.draw();
+
+        this.player.inventory.getSelected().drawImg(this.player.position, new Size(100, 100));
     }
 
     mousedown() {
