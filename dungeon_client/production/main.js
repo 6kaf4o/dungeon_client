@@ -30,9 +30,11 @@ module.exports = class Basegame { // Abstract class
                 this.mousemove();
                 break;
             case 'mousedown':
+                Gamestate.isMouseDown = true;
                 this.mousedown();
                 break;
             case 'mouseup':
+                Gamestate.isMouseDown = false;
                 this.mouseup();
                 break;
             case 'keydown':
@@ -57,6 +59,7 @@ module.exports = class Basegame { // Abstract class
     
         Gamestate.mousePosition = new Point(0, 0);
         Gamestate.isKeyPressed = new Array(256).fill(0);
+        Gamestate.isMouseDown = false;
 
         window.addEventListener("keyup", this);
         window.addEventListener("keydown", this);
@@ -82,12 +85,13 @@ module.exports = class Basegame { // Abstract class
 /***/ 147:
 /***/ ((module) => {
 
-let canvas, context, mousePosition, isKeyPressed;
+let canvas, context, mousePosition, isKeyPressed, isMouseDown;
 module.exports = {
     canvas,
     context,
     mousePosition,
-    isKeyPressed
+    isKeyPressed,
+    isMouseDown
 };
 
 /***/ }),
@@ -196,8 +200,9 @@ module.exports = class Inventory {
     update() {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
-                this.getSelected().stopUsing();
+                if (this.getSelected()) this.getSelected().stopUsing();
                 if (this.maxSize > i - 49) this.selected = i - 49; // why are we still using event.keyCode
+                if (Gamestate.isMouseDown && this.getSelected()) this.getSelected().startUsing();
             }
         }
 
@@ -1099,7 +1104,7 @@ class Game extends Basegame {
         this.player.stopUsing();
     }
 
-    keydown(key) { }
+    keydown(key) {  }
 }
 
 let game = new Game();

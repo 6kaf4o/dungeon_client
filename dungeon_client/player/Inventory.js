@@ -50,7 +50,7 @@ module.exports = class Inventory {
             if (Gamestate.isKeyPressed[i]) {
                 if (this.getSelected()) this.getSelected().stopUsing();
                 if (this.maxSize > i - 49) this.selected = i - 49; // why are we still using event.keyCode
-                if (Gamestate.isMouseDown) this.getSelected().startUsing();
+                if (Gamestate.isMouseDown && this.getSelected()) this.getSelected().startUsing();
             }
         }
 
