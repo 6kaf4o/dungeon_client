@@ -1,6 +1,48 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 741:
+/***/ ((module) => {
+
+//Camera is not static and you may have multiple cameras
+module.exports = class Camera {
+    constructor(mazeSize, cameraSize) {
+        this.mazeSize = mazeSize;
+        this.cameraSize = cameraSize;
+        this.pos = { x: 0, y: 0 };
+    }
+
+    //follow() reqires a Point class to follow and updates the cameras position
+    follow(a) {
+        console.log(a)
+        this.pos.x = a.position.x - this.cameraSize.x / 2;
+        this.pos.y = a.position.y - this.cameraSize.y / 2;
+        if (this.pos.x < 0) {
+            this.pos.x = 0;
+        }
+        if (this.pos.y < 0) {
+            this.pos.y = 0;
+        }
+        if (this.pos.x > this.mazeSize.x) {
+            this.pos.x = this.mazeSize.x;
+        }
+        if (this.pos.y > this.mazeSize.y) {
+            this.pos.y = this.mazeSize.y;
+        }
+    }
+
+    // calculates a point's draw position according to the cameras location
+    calculate_pos(pos) {
+        let returnpos = { x: pos.x, y: pos.y }
+        returnpos.x -= this.pos.x
+        returnpos.y -= this.pos.y
+        return returnpos;
+    }
+
+}
+
+/***/ }),
+
 /***/ 313:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -100,6 +142,7 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const Geometry = __webpack_require__(322);
+const Gamestate = __webpack_require__(147);
 const Point = Geometry.Point;
 const Line = Geometry.Line;
 const Utility = __webpack_require__(580)
@@ -107,10 +150,10 @@ const Utility = __webpack_require__(580)
 module.exports = class Lighting {
     // Takes an array of walls as a perimeter
     constructor(walls) {
-        this.walls = walls;
-    }
-    // Finds the intersection points between walls and rays cast at angles from the start point
-    drawLight(start) {
+            this.walls = walls;
+        }
+        // Finds the intersection points between walls and rays cast at angles from the start point
+    getIntersections(start) {
         // We declare the intersections array and make it empty(to clear out the already existing rays beforehand(if any are present))
         this.intersections = [];
         // This for loop does all the checks for intersection at angle intervals of 0.002
@@ -166,7 +209,8 @@ module.exports = class Inventory {
     }
 
     draw() {
-        const w = Gamestate.canvas.width, h = Gamestate.canvas.height;
+        const w = Gamestate.canvas.width,
+            h = Gamestate.canvas.height;
         const slotSize = w / 16;
         Gamestate.context.globalAlpha = 1;
 
@@ -274,31 +318,30 @@ const Utility = __webpack_require__(580);
 const Geometry = __webpack_require__(322);
 const Point = Geometry.Point;
 
-module.exports = class Player{
-    constructor(position, health, inventory, id){
+module.exports = class Player {
+    constructor(position, health, inventory, id) {
         this.position = position;
         this.id = id;
         this.inventory = inventory;
         this.delta = 0;
         // TODO wtf who wrote this code 
         // Author : Vladi...
-        this.spritesheet = new Sheet('./images/bruh.png', 
-                        {rows:4, columns:4, width:408, height:611});
+        this.spritesheet = new Sheet('./images/test_char.png', { rows: 4, columns: 4, width: 1601, height: 2397 });
 
         this.health = health;
         this.maxHealth = health;
         this.sprite = {
-            left:[],
-            right:[],
-            up:[],
-            down:[],
-            global:4
+            left: 2,
+            right: 3,
+            up: 1,
+            down: 0,
+            global: 4
         }
 
         this.dir = "up";
         this.cursprite = 0;
-        
-        for(let i = 0 ; i < this.sprite.global ; i ++){
+
+        for (let i = 0; i < this.sprite.global; i++) {
             this.sprite.left = 2
             this.sprite.up = 1
             this.sprite.down = 0
@@ -307,21 +350,22 @@ module.exports = class Player{
 
         this.curimg
         this.size = {
-            x:50,
-            y:70
+            x: 50,
+            y: 70
         }
 
         this.colorscheme = {
-            r:Math.random()*255,
-            g:Math.random()*255,
-            b:Math.random()*255,
-            rainbow : false
+            r: Math.random() * 255,
+            g: Math.random() * 255,
+            b: Math.random() * 255,
+            rainbow: false
         }
 
         this.itr = 0;
     }
-    update(walls){
-        let movx = false , movy = false
+    update(walls) {
+        let movx = false,
+            movy = false
 
         if (Gamestate.isKeyPressed[65]) {
             // All collision detections done before movement to prevent getting stuck 
@@ -359,59 +403,61 @@ module.exports = class Player{
         } else {
 
             movy = false
-        }   
+        }
 
-        if((!movx && !movy)|| this.delta > 6){
-            if(this.delta > 0){
+        if ((!movx && !movy) || this.delta > 6) {
+            if (this.delta > 0) {
                 this.delta -= 0.05
             }
             this.delta /= 1.04
         }
-        
-        if(this.delta > 0.1){
+
+        if (this.delta > 0.1) {
             this.itr++
-            if(this.itr%30 == 0){
-                this.cursprite ++;
-            }
-        }else{
+                if (this.itr % 30 == 0) {
+                    this.cursprite++;
+                }
+        } else {
             this.irt = 0;
             this.cursprite = 0;
         }
-        
-        if(this.cursprite == this.sprite.global){
+
+        if (this.cursprite == this.sprite.global) {
             this.cursprite = 0;
         }
         //--------------------->>> Sprite management <<<----------------------------------------\\
 
         this.inventory.update();
     }
-    draw(){
+    draw(camera) {
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-        switch(this.dir){
-            case "up" :                         
-                Gamestate.context.drawImage(this.spritesheet.image , this.cursprite*this.spritesheet.w/this.spritesheet.x , this.sprite.up*this.spritesheet.h/this.spritesheet.y , this.spritesheet.w/this.spritesheet.x , this.spritesheet.h/this.spritesheet.y , this.position.x - this.size.x/2 , this.position.y - this.size.x/2, this.size.x , this.size.y)
+        let curdrawpos = camera.calculate_pos(this.position)
+        switch (this.dir) {
+            case "up":
+                this.spritesheet.draw(new Point(this.cursprite, this.sprite.up), curdrawpos, this.size.x, this.size.y)
                 break;
-            case "down" : 
+            case "down":
                 // this.curimg = this.sprite.down[this.cursprite]
-                Gamestate.context.drawImage(this.spritesheet.image , this.cursprite*this.spritesheet.w/this.spritesheet.x , this.sprite.down*this.spritesheet.h/this.spritesheet.y , this.spritesheet.w/this.spritesheet.x , this.spritesheet.h/this.spritesheet.y , this.position.x - this.size.x/2, this.position.y - this.size.x/2, this.size.x , this.size.y)
+
+                this.spritesheet.draw(new Point(this.cursprite, this.sprite.down), curdrawpos, this.size.x, this.size.y)
                 break;
-            case "left" : 
+            case "left":
                 // this.curimg = this.sprite.left[this.cursprite]                        
-                Gamestate.context.drawImage(this.spritesheet.image , this.cursprite*this.spritesheet.w/this.spritesheet.x , this.sprite.left*this.spritesheet.h/this.spritesheet.y , this.spritesheet.w/this.spritesheet.x , this.spritesheet.h/this.spritesheet.y , this.position.x - this.size.x/2, this.position.y - this.size.x/2, this.size.x , this.size.y)
+                this.spritesheet.draw(new Point(this.cursprite, this.sprite.left), curdrawpos, this.size.x, this.size.y)
                 break;
-            case "right" : 
+            case "right":
                 // this.curimg = this.sprite.right[this.cursprite]
-                Gamestate.context.drawImage(this.spritesheet.image , this.cursprite*this.spritesheet.w/this.spritesheet.x , this.sprite.right*this.spritesheet.h/this.spritesheet.y , this.spritesheet.w/this.spritesheet.x , this.spritesheet.h/this.spritesheet.y , this.position.x - this.size.x/2, this.position.y - this.size.x/2, this.size.x , this.size.y)
+                this.spritesheet.draw(new Point(this.cursprite, this.sprite.right), curdrawpos, this.size.x, this.size.y)
                 break;
         }
-        Gamestate.context.fillStyle = 'blue';
-        Gamestate.context.fillRect(this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
+        // Gamestate.context.fillStyle = 'blue';
+        // Gamestate.context.fillRect(this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
         let healthBarSize = this.size.x * this.maxHealth / 50;
         Gamestate.context.fillStyle = 'red';
-        Gamestate.context.fillRect(this.position.x - healthBarSize / 2, this.position.y - this.size.y / 2 - this.size.y / 10, healthBarSize, this.size.y / 20);
+        Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize, this.size.y / 20);
         Gamestate.context.fillStyle = 'green';
-        Gamestate.context.fillRect(this.position.x - healthBarSize / 2, this.position.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
+        Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
         this.inventory.draw();
@@ -425,7 +471,6 @@ module.exports = class Player{
         this.inventory.stopUsing();
     }
 }
-
 
 /***/ }),
 
@@ -452,15 +497,17 @@ class Size {
 class Line {
     // Takes two points as parameters(begin and end), each of them has a x and y position
     constructor(begin, end) {
-        this.begin = begin;
-        this.end = end;
-        this.recalculate();
-    }
-    // Draws the line(if needed)
-    draw() {
+            this.begin = begin;
+            this.end = end;
+            this.recalculate();
+        }
+        // Draws the line(if needed)
+    draw(camera) {
         Gamestate.context.beginPath();
-        Gamestate.context.lineTo(this.begin.x, this.begin.y);
-        Gamestate.context.lineTo(this.end.x, this.end.y);
+        let begin = camera.calculate_pos(this.begin)
+        let end = camera.calculate_pos(this.end)
+        Gamestate.context.lineTo(begin.x, begin.y);
+        Gamestate.context.lineTo(end.x, end.y);
         Gamestate.context.stroke();
     }
     recalculate() {
@@ -651,27 +698,27 @@ const Point = Geometry.Point;
 const Line = Geometry.Line;
 
 class Projectile { // Abstract class, please don't create any objects of this type
-    constructor(position, delta, damage){
+    constructor(position, delta, damage) {
         // TODO: Throw an error if initialized 
         this.position = position;
         this.delta = delta;
         this.damage = damage;
     }
-    calculateDamage(){}
-    update(){}
-    draw(){}
-    isColliding(rect){}
+    calculateDamage() {}
+    update() {}
+    draw() {}
+    isColliding(rect) {}
 }
 class BasicBullet extends Projectile {
     constructor(position, delta, damage, radius = 5) {
         super(position, delta, damage);
         this.radius = radius;
     }
-    update() {   
+    update() {
         this.position.x += this.delta.x;
         this.position.y += this.delta.y;
     }
-    draw() {
+    draw(camera) {
         Gamestate.context.beginPath();
         Gamestate.context.fillStyle = "blue";
         Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
@@ -680,7 +727,7 @@ class BasicBullet extends Projectile {
     calculateDamage() {
         return this.damage;
     }
-    isColliding(rect){
+    isColliding(rect) {
         return rectCircleColliding(this, player);
     }
 }
@@ -690,11 +737,11 @@ class Fireball extends Projectile {
         super(position, delta, damage);
         this.radius = radius;
     }
-    update() {   
+    update() {
         this.position.x += this.delta.x;
         this.position.y += this.delta.y;
     }
-    draw() {
+    draw(camera) {
         Gamestate.context.beginPath();
         Gamestate.context.fillStyle = "yellow";
         Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
@@ -703,38 +750,38 @@ class Fireball extends Projectile {
     calculateDamage() {
         return this.damage;
     }
-    isColliding(rect){
+    isColliding(rect) {
         return rectCircleColliding(this, player);
     }
 }
 
 class Arrow extends Projectile {
-    constructor(position, delta, damage, width = 20, height = 5){
+    constructor(position, delta, damage, width = 20, height = 5) {
         super(position, delta, damage);
         this.size = new Size(width, height);
         this.theta = Math.atan2(this.delta.x, this.delta.y);
 
     }
-    update() {   
+    update() {
         this.position.x += this.delta.x;
         this.position.y += this.delta.y;
     }
-    draw(){
+    draw(camera) {
         Gamestate.context.save();
         Gamestate.context.translate(this.position.x - (this.size.width / 2), this.position.y - (this.size.height / 2))
         Gamestate.context.rotate(this.theta)
-        Gamestate.context.fillRect(-this.size.width/2, -this.size.height/2, this.size.width, this.size.height);
+        Gamestate.context.fillRect(-this.size.width / 2, -this.size.height / 2, this.size.width, this.size.height);
         Gamestate.context.restore();
     }
 }
 
 class Bubble extends Projectile {
-    constructor(position, delta, damage, radius = 20){
+    constructor(position, delta, damage, radius = 20) {
         super(position, delta, damage);
         this.radius = radius;
     }
-    update(){
-        if(this.delta.x < 0.25 || this.delta.y < 0.25){
+    update() {
+        if (this.delta.x < 0.25 || this.delta.y < 0.25) {
             this.position.x += this.delta.y;
             this.position.y += this.delta.x;
             let len = Math.sqrt(this.delta.x * this.delta.x + this.delta.y * this.delta.y);
@@ -743,17 +790,17 @@ class Bubble extends Projectile {
             this.delta.y = (this.delta.y / len) * newLen;
         }
     }
-    draw(){
+    draw(camera) {
         Gamestate.context.beginPath();
         Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
-        Gamestate.context.stroke();        
+        Gamestate.context.stroke();
     }
 
 }
 
 class Grenade extends Projectile {
-    constructor(position, delta, damage, width = 25, height = 6, radius = 10){
+    constructor(position, delta, damage, width = 25, height = 6, radius = 10) {
         super(position, delta, damage);
         this.size = new Size(width, height)
         this.radius = radius;
@@ -761,33 +808,33 @@ class Grenade extends Projectile {
         this.boom = false;
 
     }
-    update(){
-        if(!this.boom){
-        this.position.x += this.delta.x;
-        this.position.y += this.delta.y;
+    update() {
+        if (!this.boom) {
+            this.position.x += this.delta.x;
+            this.position.y += this.delta.y;
         }
-        if(this.boom && this.radius <= 100){
+        if (this.boom && this.radius <= 100) {
             this.radius += 2;
         }
     }
-    draw(){
-            if(!this.boom){
-                Gamestate.context.save();
-                Gamestate.context.translate(this.position.x - (this.size.width / 2), this.position.y - (this.size.height / 2))
-                Gamestate.context.rotate(this.theta);
-                Gamestate.context.fillRect(-this.size.width/2, -this.size.height/2, this.size.width, this.size.height);
-                Gamestate.context.restore();
-            }else if(this.boom){
-                Gamestate.context.beginPath();
-                Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
-                Gamestate.context.fill();
-                Gamestate.context.stroke();     
-            }
+    draw(camera) {
+        if (!this.boom) {
+            Gamestate.context.save();
+            Gamestate.context.translate(this.position.x - (this.size.width / 2), this.position.y - (this.size.height / 2))
+            Gamestate.context.rotate(this.theta);
+            Gamestate.context.fillRect(-this.size.width / 2, -this.size.height / 2, this.size.width, this.size.height);
+            Gamestate.context.restore();
+        } else if (this.boom) {
+            Gamestate.context.beginPath();
+            Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
+            Gamestate.context.fill();
+            Gamestate.context.stroke();
+        }
     }
-    explode(){
+    explode() {
         this.boom = true;
     }
-    isColliding(rect){
+    isColliding(rect) {
         return rectCircleColliding(this, player);
     }
 
@@ -796,8 +843,8 @@ class Grenade extends Projectile {
 module.exports = {
     Projectile: Projectile,
     Fireball: Fireball,
-    Arrow: Arrow, 
-    Bubble: Bubble, 
+    Arrow: Arrow,
+    Bubble: Bubble,
     Grenade: Grenade,
     BasicBullet: BasicBullet
 }
@@ -1036,6 +1083,7 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const Player = __webpack_require__(94);
+const Camera = __webpack_require__(741);
 const Inventory = __webpack_require__(825);
 const Lighting = __webpack_require__(732);
 const Gamestate = __webpack_require__(147);
@@ -1065,33 +1113,38 @@ class Game extends Basegame {
         this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150));
 
         this.lighting = new Lighting(this.walls);
+
+        this.camera = new Camera(new Point(800, 600), new Point(800, 600))
     }
 
     update() {
-        this.intersections = this.lighting.drawLight(this.player.position);
+        this.camera.follow(this.player)
+        this.intersections = this.lighting.getIntersections(this.player.position);
         this.player.update(this.walls);
         this.player.inventory.update();
     }
 
     draw() {
         Gamestate.context.fillStyle = "black";
-        Gamestate.context.fillRect(0, 0, Gamestate.canvas.width, Gamestate.canvas.height);
+        Gamestate.context.fillRect(this.camera.calculate_pos(new Point(0, 0)).x, this.camera.calculate_pos(new Point(0, 0)).y, Gamestate.canvas.width, Gamestate.canvas.height);
 
         Gamestate.context.fillStyle = "white";
         Gamestate.context.beginPath();
         for (let i = 1; i < this.intersections.length; i++) {
-            Gamestate.context.lineTo(this.intersections[i].x, this.intersections[i].y)
+            let drawPosition = this.camera.calculate_pos(this.intersections[i])
+            Gamestate.context.lineTo(drawPosition.x, drawPosition.y)
         }
         Gamestate.context.fill()
-        this.lighting.drawLight(this.player.position)
+
+        let curdrawplayerpos = this.camera.calculate_pos(this.player.position)
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
         for (let i = 0; i < this.walls.length; i++) {
-            this.walls[i].draw();
+            this.walls[i].draw(this.camera);
         }
 
-        this.player.draw();
+        this.player.draw(this.camera);
         this.player.inventory.draw();
 
     }
@@ -1104,7 +1157,7 @@ class Game extends Basegame {
         this.player.stopUsing();
     }
 
-    keydown(key) {  }
+    keydown(key) {}
 }
 
 let game = new Game();

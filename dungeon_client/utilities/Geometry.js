@@ -18,15 +18,17 @@ class Size {
 class Line {
     // Takes two points as parameters(begin and end), each of them has a x and y position
     constructor(begin, end) {
-        this.begin = begin;
-        this.end = end;
-        this.recalculate();
-    }
-    // Draws the line(if needed)
-    draw() {
+            this.begin = begin;
+            this.end = end;
+            this.recalculate();
+        }
+        // Draws the line(if needed)
+    draw(camera) {
         Gamestate.context.beginPath();
-        Gamestate.context.lineTo(this.begin.x, this.begin.y);
-        Gamestate.context.lineTo(this.end.x, this.end.y);
+        let begin = camera.calculate_pos(this.begin)
+        let end = camera.calculate_pos(this.end)
+        Gamestate.context.lineTo(begin.x, begin.y);
+        Gamestate.context.lineTo(end.x, end.y);
         Gamestate.context.stroke();
     }
     recalculate() {

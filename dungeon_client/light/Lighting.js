@@ -1,4 +1,5 @@
 const Geometry = require('/utilities/Geometry.js');
+const Gamestate = require('/framework/State.js');
 const Point = Geometry.Point;
 const Line = Geometry.Line;
 const Utility = require('/utilities/Utility.js')
@@ -6,10 +7,10 @@ const Utility = require('/utilities/Utility.js')
 module.exports = class Lighting {
     // Takes an array of walls as a perimeter
     constructor(walls) {
-        this.walls = walls;
-    }
-    // Finds the intersection points between walls and rays cast at angles from the start point
-    drawLight(start) {
+            this.walls = walls;
+        }
+        // Finds the intersection points between walls and rays cast at angles from the start point
+    getIntersections(start) {
         // We declare the intersections array and make it empty(to clear out the already existing rays beforehand(if any are present))
         this.intersections = [];
         // This for loop does all the checks for intersection at angle intervals of 0.002

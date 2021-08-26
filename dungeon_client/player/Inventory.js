@@ -14,7 +14,8 @@ module.exports = class Inventory {
     }
 
     draw() {
-        const w = Gamestate.canvas.width, h = Gamestate.canvas.height;
+        const w = Gamestate.canvas.width,
+            h = Gamestate.canvas.height;
         const slotSize = w / 16;
         Gamestate.context.globalAlpha = 1;
 

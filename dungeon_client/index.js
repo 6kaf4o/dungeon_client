@@ -1,4 +1,5 @@
 const Player = require('/player/Player.js');
+const Camera = require('/camera/Camera.js');
 const Inventory = require('/player/Inventory.js');
 const Lighting = require('/light/Lighting.js');
 const Gamestate = require('/framework/State.js');
@@ -28,33 +29,38 @@ class Game extends Basegame {
         this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150));
 
         this.lighting = new Lighting(this.walls);
+
+        this.camera = new Camera(new Point(800, 600), new Point(800, 600))
     }
 
     update() {
-        this.intersections = this.lighting.drawLight(this.player.position);
+        this.camera.follow(this.player)
+        this.intersections = this.lighting.getIntersections(this.player.position);
         this.player.update(this.walls);
         this.player.inventory.update();
     }
 
     draw() {
         Gamestate.context.fillStyle = "black";
-        Gamestate.context.fillRect(0, 0, Gamestate.canvas.width, Gamestate.canvas.height);
+        Gamestate.context.fillRect(this.camera.calculate_pos(new Point(0, 0)).x, this.camera.calculate_pos(new Point(0, 0)).y, Gamestate.canvas.width, Gamestate.canvas.height);
 
         Gamestate.context.fillStyle = "white";
         Gamestate.context.beginPath();
         for (let i = 1; i < this.intersections.length; i++) {
-            Gamestate.context.lineTo(this.intersections[i].x, this.intersections[i].y)
+            let drawPosition = this.camera.calculate_pos(this.intersections[i])
+            Gamestate.context.lineTo(drawPosition.x, drawPosition.y)
         }
         Gamestate.context.fill()
-        this.lighting.drawLight(this.player.position)
+
+        let curdrawplayerpos = this.camera.calculate_pos(this.player.position)
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
         for (let i = 0; i < this.walls.length; i++) {
-            this.walls[i].draw();
+            this.walls[i].draw(this.camera);
         }
 
-        this.player.draw();
+        this.player.draw(this.camera);
         this.player.inventory.draw();
 
     }
@@ -67,7 +73,7 @@ class Game extends Basegame {
         this.player.stopUsing();
     }
 
-    keydown(key) {  }
+    keydown(key) {}
 }
 
 let game = new Game();
