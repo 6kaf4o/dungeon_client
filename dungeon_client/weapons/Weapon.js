@@ -62,7 +62,7 @@ class BasicGun extends Weapons{
 			let dist = Utility.distance(shotFrom, shotTo);
 			let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
 			let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-			this.bullets.push(new Bullets.Fireball(
+			this.bullets.push(new Bullets.BasicBullet(
 			new Point(shotFrom.x, shotFrom.y), 
 			new Point(deltaX, deltaY), 69));
 			this.cooldown = this.reloadRate;
@@ -105,7 +105,7 @@ class AK47 extends Weapons{
 				let dist = Utility.distance(shotFrom, shotTo);
 				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
 				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-				this.bullets.push(new Bullets.Fireball(
+				this.bullets.push(new Bullets.BasicBullet(
 				new Point(shotFrom.x, shotFrom.y), 
 				new Point(deltaX, deltaY), 69));
 				this.cooldown = this.reloadRate;
@@ -146,30 +146,30 @@ class Shotgun extends Weapons{
 			let shotTo = Gamestate.mousePosition;			
 			let dist = Utility.distance(shotFrom, shotTo);
 			let speed = []
-			for(let i = 0;i < 7;i++){
+			for(let i = 0; i < 7; i++){
 				speed[i] = Math.random()*3+3;
 			}
 			let deltaX = (shotTo.x - shotFrom.x) / dist * speed[1];
 			let deltaY = (shotTo.y - shotFrom.y) / dist * speed[1];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[2];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[2];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.15, deltaY+0.15), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.15, deltaY+0.15), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[3];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[3];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.15, deltaY-0.15), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.15, deltaY-0.15), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[4];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[4];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.30, deltaY+0.30), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.30, deltaY+0.30), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[5];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[5];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.30, deltaY-0.30), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.30, deltaY-0.30), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[6];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[6];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.45, deltaY-0.45), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.45, deltaY-0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
 

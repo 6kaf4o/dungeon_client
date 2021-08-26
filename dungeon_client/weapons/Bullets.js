@@ -16,6 +16,28 @@ class Projectile { // Abstract class, please don't create any objects of this ty
     draw(){}
     isColliding(rect){}
 }
+class BasicBullet extends Projectile {
+    constructor(position, delta, damage, radius = 5) {
+        super(position, delta, damage);
+        this.radius = radius;
+    }
+    update() {   
+        this.position.x += this.delta.x;
+        this.position.y += this.delta.y;
+    }
+    draw() {
+        Gamestate.context.beginPath();
+        Gamestate.context.fillStyle = "blue";
+        Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.fill();
+    }
+    calculateDamage() {
+        return this.damage;
+    }
+    isColliding(rect){
+        return rectCircleColliding(this, player);
+    }
+}
 
 class Fireball extends Projectile {
     constructor(position, delta, damage, radius = 15) {
@@ -28,9 +50,9 @@ class Fireball extends Projectile {
     }
     draw() {
         Gamestate.context.beginPath();
+        Gamestate.context.fillStyle = "yellow";
         Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
-        Gamestate.context.stroke();
     }
     calculateDamage() {
         return this.damage;
@@ -130,5 +152,6 @@ module.exports = {
     Fireball: Fireball,
     Arrow: Arrow, 
     Bubble: Bubble, 
-    Grenade: Grenade
+    Grenade: Grenade,
+    BasicBullet: BasicBullet
 }
