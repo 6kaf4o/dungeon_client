@@ -14,6 +14,7 @@ class Weapons { // TODO: Abstract class
 		this.reloadRate = reloadRate;
 		this.alreadyShot = true;
 		this.ammo=ammo;
+		this.maxAmmo = ammo;
 	}
 
 	startUsing() {
@@ -38,6 +39,10 @@ class Weapons { // TODO: Abstract class
 		}
 		this.cooldown--;
 		if (this.cooldown > 0) return;
+		if(Gamestate.isKeyPressed[32]){
+			this.cooldown = 800;
+			this.ammo=this.maxAmmo;
+		}
 		this.inferiorUpdate();
 	}
 
@@ -59,10 +64,6 @@ class BasicGun extends Weapons{
 
 	inferiorUpdate() {
 	//	console.log(this.ammo);
-	if(Gamestate.isKeyPressed[32]){
-		this.cooldown = 800;
-		this.ammo=20;
-	}
 		if(this.ammo>0){
 			if(!this.alreadyShot) {
 				let shotFrom = this.owner.position;
