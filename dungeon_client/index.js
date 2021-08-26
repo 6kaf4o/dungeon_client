@@ -6,6 +6,7 @@ const Gamestate = require('/framework/State.js');
 const Basegame = require('/framework/Framework.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
+const Size = Geometry.Size;
 const Line = Geometry.Line;
 const Weapons = require('/weapons/Weapon.js');
 const Maze = require('/utilities/Maze.js');
@@ -51,6 +52,10 @@ class Game extends Basegame {
         for (let i = 0; i < Maze.walls.length; i++) {
             Maze.walls[i].draw(this.camera);
         }
+
+        this.player.draw();
+
+        this.player.inventory.getSelected().drawImg(this.player.position, new Size(100, 100));
     }
 
     mousedown() {

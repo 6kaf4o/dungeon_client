@@ -68,7 +68,7 @@ class Arrow extends Projectile {
     constructor(position, delta, damage, width = 20, height = 5) {
         super(position, delta, damage);
         this.size = new Size(width, height);
-        this.theta = Math.atan2(this.delta.x, this.delta.y);
+        this.theta = Math.atan2(this.delta.y, this.delta.x);
 
     }
     update() {
