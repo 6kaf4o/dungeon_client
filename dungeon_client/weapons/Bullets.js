@@ -27,7 +27,7 @@ class BasicBullet extends Projectile {
     }
     draw() {
         Gamestate.context.beginPath();
-        Gamestate.context.fillStyle = "blue";
+        Gamestate.context.fillStyle = "#442442";
         Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
     }
