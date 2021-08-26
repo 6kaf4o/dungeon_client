@@ -82,6 +82,8 @@ class AK47 extends Weapons{
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
 	constructor(owner,reloadRate) {
 		super(owner, reloadRate);
+		this.sprite = new Image();
+		this.sprite.src = '../production/images/assaultRifle.png';
 	}
 
 	startUsing() {
@@ -124,6 +126,8 @@ class Shotgun extends Weapons{
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
 	constructor(owner,reloadRate) {
 		super(owner, reloadRate);
+		this.sprite = new Image();
+		this.sprite.src = '../production/images/shotgun.png';
 	}
 
 	startUsing() {
