@@ -26,7 +26,7 @@ class Game extends Basegame {
 
     update() {
         this.intersections = this.lighting.drawLight(this.player.position);
-        this.player.update(Maze.walls);
+        this.player.update();
     }
 
     draw() {
