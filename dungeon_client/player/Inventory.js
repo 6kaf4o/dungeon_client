@@ -47,7 +47,7 @@ module.exports = class Inventory {
         }
     }
 
-    update() {
+    update(camera) {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
                 if (this.getSelected()) this.getSelected().stopUsing();
@@ -58,7 +58,7 @@ module.exports = class Inventory {
 
         for (let i = 0; i < this.maxSize; i++) {
             if (!this.content[i].empty) {
-                this.content[i].item.update();
+                this.content[i].item.update(camera);
             }
         }
     }

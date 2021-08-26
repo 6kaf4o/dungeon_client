@@ -28,7 +28,7 @@ class Game extends Basegame {
     update() {
         this.camera.follow(this.player)
         this.intersections = this.lighting.getIntersections(this.player.position);
-        this.player.update(this.walls);
+        this.player.update(this.walls , this.camera);
     }
 
     draw() {

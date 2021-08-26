@@ -251,7 +251,7 @@ module.exports = class Inventory {
         }
     }
 
-    update() {
+    update(camera) {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
                 if (this.getSelected()) this.getSelected().stopUsing();
@@ -262,7 +262,7 @@ module.exports = class Inventory {
 
         for (let i = 0; i < this.maxSize; i++) {
             if (!this.content[i].empty) {
-                this.content[i].item.update();
+                this.content[i].item.update(camera);
             }
         }
     }
@@ -374,7 +374,7 @@ module.exports = class Player {
 
         this.itr = 0;
     }
-    update(walls) {
+    update(walls , camera) {
         let movx = false,
             movy = false
 
@@ -451,7 +451,7 @@ module.exports = class Player {
         }
         //--------------------->>> Sprite management <<<----------------------------------------\\
 
-        this.inventory.update();
+        this.inventory.update(camera);
     }
     draw(camera) {
         //--------------------->>> sprite draw <<<----------------------------------------\\
@@ -930,7 +930,7 @@ class Weapons { // TODO: Abstract class
     equip(newOwner) { this.owner = newOwner; }
     unequip() {}
 
-    update() {
+    update(camera) {
         for (let i in this.bullets) {
             this.bullets[i].update();
             if (Utility.boxWallsColliding(this.bullets[i].position, 10, 10, Maze.walls)) {
@@ -945,7 +945,7 @@ class Weapons { // TODO: Abstract class
             this.ammo = this.maxAmmo;
         }
         if (this.cooldown > 0) return;
-        this.inferiorUpdate();
+        this.inferiorUpdate(camera);
 
     }
 
@@ -981,12 +981,14 @@ class BasicGun extends Weapons {
 
     stopUsing() {}
 
-    inferiorUpdate() {
+    inferiorUpdate(camera) {
         //	console.log(this.ammo);
         if (this.ammo > 0) {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
                 let shotTo = Gamestate.mousePosition;
+				shotTo.x += camera.pos.x;
+				shotTo.y += camera.pos.y;
                 let dist = Utility.distance(shotFrom, shotTo);
                 let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
                 let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
@@ -1009,7 +1011,7 @@ class AK47 extends Weapons {
         this.sprite = new Image();
         this.sprite.src = '../production/images/assaultRifle.png';
     }
-    inferiorUpdate() {
+    inferiorUpdate(camera) {
         if (Gamestate.isKeyPressed[32]) {
             this.cooldown = 600;
             this.ammo = 60;
@@ -1018,6 +1020,8 @@ class AK47 extends Weapons {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
                 let shotTo = Gamestate.mousePosition;
+				shotTo.x += camera.pos.x;
+				shotTo.y += camera.pos.y;
                 if (this.alreadyShot == false) {
                     let dist = Utility.distance(shotFrom, shotTo);
                     let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
@@ -1041,7 +1045,7 @@ class Shotgun extends Weapons {
         this.sprite = new Image();
         this.sprite.src = '../production/images/shotgun.png';
     }
-    inferiorUpdate() {
+    inferiorUpdate(camera) {
         if (Gamestate.isKeyPressed[32]) {
             this.cooldown = 700;
             this.ammo = 8;
@@ -1050,6 +1054,8 @@ class Shotgun extends Weapons {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
                 let shotTo = Gamestate.mousePosition;
+				shotTo.x += camera.pos.x;
+				shotTo.y += camera.pos.y;
                 let dist = Utility.distance(shotFrom, shotTo);
                 let speed = []
                 for (let i = 0; i < 7; i++) {
@@ -1153,7 +1159,7 @@ class Game extends Basegame {
     update() {
         this.camera.follow(this.player)
         this.intersections = this.lighting.getIntersections(this.player.position);
-        this.player.update(this.walls);
+        this.player.update(this.walls , this.camera);
     }
 
     draw() {

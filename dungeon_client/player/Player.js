@@ -51,7 +51,7 @@ module.exports = class Player {
 
         this.itr = 0;
     }
-    update(walls) {
+    update(walls , camera) {
         let movx = false,
             movy = false
 
@@ -128,7 +128,7 @@ module.exports = class Player {
         }
         //--------------------->>> Sprite management <<<----------------------------------------\\
 
-        this.inventory.update();
+        this.inventory.update(camera);
     }
     draw(camera) {
         //--------------------->>> sprite draw <<<----------------------------------------\\
