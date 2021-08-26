@@ -26,7 +26,6 @@ class BasicBullet extends Projectile {
         this.position.y += this.delta.y /* / Gamestate.deltaTime * 2 */ ;
     }
     draw(camera) {
-        console.log("Bullet cam : ", camera)
         Gamestate.context.beginPath();
         Gamestate.context.fillStyle = "#442442";
         let newpos = camera.calculate_pos(this.position)
