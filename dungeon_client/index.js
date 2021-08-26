@@ -67,7 +67,7 @@ class Game extends Basegame {
         this.player.stopUsing();
     }
 
-    keydown(key) { }
+    keydown(key) {  }
 }
 
 let game = new Game();

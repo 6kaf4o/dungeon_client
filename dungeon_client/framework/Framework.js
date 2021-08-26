@@ -24,9 +24,11 @@ module.exports = class Basegame { // Abstract class
                 this.mousemove();
                 break;
             case 'mousedown':
+                Gamestate.isMouseDown = true;
                 this.mousedown();
                 break;
             case 'mouseup':
+                Gamestate.isMouseDown = false;
                 this.mouseup();
                 break;
             case 'keydown':
@@ -51,6 +53,7 @@ module.exports = class Basegame { // Abstract class
     
         Gamestate.mousePosition = new Point(0, 0);
         Gamestate.isKeyPressed = new Array(256).fill(0);
+        Gamestate.isMouseDown = false;
 
         window.addEventListener("keyup", this);
         window.addEventListener("keydown", this);
