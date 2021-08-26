@@ -319,7 +319,7 @@ module.exports = class Player{
         let movx = false , movy = false
 
         if (Gamestate.isKeyPressed[65]) {
-            // All collision detections done before movement to prevent getting stuck
+            // All collision detections done before movement to prevent getting stuck 
             if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) - this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
                 this.dir = "left"
                 this.position.x -= this.delta
