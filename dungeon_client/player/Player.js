@@ -1,6 +1,9 @@
 const Sheet = require('/utilities/Sheet.js');
 const Gamestate = require('/framework/State.js');
 const Weapons = require('/weapons/Weapon.js');
+const Utility = require('/utilities/Utility.js');
+const Geometry = require('/utilities/Geometry.js');
+const Point = Geometry.Point;
 
 module.exports = class Player{
     constructor(position, health, inventory, id){
@@ -48,42 +51,46 @@ module.exports = class Player{
 
         this.itr = 0;
     }
-    update(){
+    update(walls){
         let movx = false , movy = false
 
-        if(Gamestate.isKeyPressed[65]){
-
-            this.dir = "left"
-            this.position.x -= this.delta
-            movx = true
-            this.delta += 0.1
-        }else if(Gamestate.isKeyPressed[68]){
-
-            this.dir = "right"
-            this.position.x += this.delta
-            movx = true
-            this.delta += 0.1
-        }else {
-
+        if (Gamestate.isKeyPressed[65]) {
+            // All collision detections done before movement to prevent getting stuck
+            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) - this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+                this.dir = "left"
+                this.position.x -= this.delta
+                movx = true
+                this.delta += 0.1
+            }
+        } else if (Gamestate.isKeyPressed[68]) {
+            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) + this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+                this.dir = "right"
+                this.position.x += this.delta
+                movx = true
+                this.delta += 0.1
+            }
+        } else {
             movx = false
         }
 
-        if(Gamestate.isKeyPressed[87]){
-
-            this.dir = "up"
-            this.position.y -= this.delta
-            movy = true
-            this.delta += 0.1
-        }else if(Gamestate.isKeyPressed[83]){
-
-            this.dir = "down"
-            this.position.y += this.delta
-            movy = true
-            this.delta += 0.1
-        }else{
+        if (Gamestate.isKeyPressed[87]) {
+            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) - this.delta), this.size.x, this.size.y, walls)) {
+                this.dir = "up"
+                this.position.y -= this.delta
+                movy = true
+                this.delta += 0.1
+            }
+        } else if (Gamestate.isKeyPressed[83]) {
+            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) + this.delta), this.size.x, this.size.y, walls)) {
+                this.dir = "down"
+                this.position.y += this.delta
+                movy = true
+                this.delta += 0.1
+            }
+        } else {
 
             movy = false
-        }
+        }   
 
         if((!movx && !movy)|| this.delta > 6){
             if(this.delta > 0){

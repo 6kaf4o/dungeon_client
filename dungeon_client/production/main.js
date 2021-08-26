@@ -110,7 +110,7 @@ module.exports = class Lighting {
         // We declare the intersections array and make it empty(to clear out the already existing rays beforehand(if any are present))
         this.intersections = [];
         // This for loop does all the checks for intersection at angle intervals of 0.002
-        for(this.angle = 0; this.angle < Math.PI * 2; this.angle += 0.002) {
+        for (this.angle = 0; this.angle < Math.PI * 2; this.angle += 0.002) {
             // This is a single intersection that will go into the intersections array later(if it gets a value)
             this.intersection = false;
             // Minimum distance defines the maximum length our light rays can have
@@ -118,20 +118,20 @@ module.exports = class Lighting {
             // Just a ray rotated around the starting point by an angle amount
             this.rotatedRay = new Line(start, new Point(start.x + Math.cos(this.angle), start.y + Math.sin(this.angle)));
             // In this for we check for collisions with every wall
-            for(this.i = 0; this.i < this.walls.length; this.i ++) {
+            for (this.i = 0; this.i < this.walls.length; this.i++) {
                 // Current intersection is a holding variable that has a sole purpose to hold the result of the intersection check
                 this.currentIntersection = Utility.wallRayIntersection(this.walls[this.i], this.rotatedRay);
                 // If a ray doesn't collide with a wall their intersection is false
-                if(this.currentIntersection !== false) {
+                if (this.currentIntersection !== false) {
                     // We determine the distance of the light ray from the player to a wall
-                    if(this.minimumDistance > Utility.distance(this.currentIntersection, start)) {
+                    if (this.minimumDistance > Utility.distance(this.currentIntersection, start)) {
                         this.intersection = this.currentIntersection;
                         this.minimumDistance = Utility.distance(this.currentIntersection, start);
                     }
                 }
             }
             // We push an intersection of value into the intersections array
-            if(this.intersection !== false) {
+            if (this.intersection !== false) {
                 this.intersections.push(this.intersection);
             }
         }
@@ -140,8 +140,6 @@ module.exports = class Lighting {
         return this.intersections;
     }
 }
-// bottom text
-
 
 /***/ }),
 
@@ -156,7 +154,7 @@ module.exports = class Inventory {
         this.maxSize = maxSize;
         if (this.maxSize > 9) this.maxSize = 9;
         this.content = [];
-        for(let i = 0; i < this.maxSize; i ++) {
+        for (let i = 0; i < this.maxSize; i++) {
             this.content[i] = new InventoryItems.Itemslot();
         }
         this.selected = 0; // index in this.content
@@ -165,13 +163,23 @@ module.exports = class Inventory {
 
     draw() {
         const w = Gamestate.canvas.width, h = Gamestate.canvas.height;
-        Gamestate.context.globalAlpha = 0.5;
-        Gamestate.context.fillStyle = 'black';
         const slotSize = w / 16;
-        Gamestate.context.fillRect(w / 2 - this.maxSize * slotSize / 2, h - slotSize, this.maxSize * slotSize, slotSize);
         Gamestate.context.globalAlpha = 1;
+
         Gamestate.context.fillStyle = '#FACC69';
         Gamestate.context.fillRect(w / 2 - this.maxSize * slotSize / 2 + this.selected * slotSize, h - slotSize, slotSize, slotSize);
+
+        for (let i = 0; i < this.maxSize; i++) {
+            if (!this.content[i].empty) {
+                this.content[i].item.draw();
+                Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
+            }
+        }
+
+        Gamestate.context.globalAlpha = 0.5;
+        Gamestate.context.fillStyle = 'black';
+        Gamestate.context.fillRect(w / 2 - this.maxSize * slotSize / 2, h - slotSize, this.maxSize * slotSize, slotSize);
+        Gamestate.context.globalAlpha = 1;
         Gamestate.context.strokeStyle = '#DAEBAA';
         Gamestate.context.lineWidth = slotSize / 10;
         Gamestate.context.lineCap = 'round';
@@ -183,26 +191,18 @@ module.exports = class Inventory {
             Gamestate.context.lineTo(w / 2 - i * slotSize, h);
             Gamestate.context.stroke();
         }
-
-        for(let i = 0; i < this.maxSize; i ++) {
-            if(!this.content[i].empty) { 
-                this.content[i].item.draw();
-                Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
-            }
-        }
     }
 
     update() {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
-                if(this.maxSize > i - 49) {
-                    this.selected = i - 49; // why are we still using event.keyCode
-                }
+                this.getSelected().stopUsing();
+                if (this.maxSize > i - 49) this.selected = i - 49; // why are we still using event.keyCode
             }
         }
 
-        for(let i = 0; i < this.maxSize; i ++) {
-            if(!this.content[i].empty) {
+        for (let i = 0; i < this.maxSize; i++) {
+            if (!this.content[i].empty) {
                 this.content[i].item.update();
             }
         }
@@ -213,8 +213,8 @@ module.exports = class Inventory {
     }
 
     equipItem(item) {
-        for(let i = 0; i < this.maxSize; i ++) {
-            if(this.content[i].empty) {
+        for (let i = 0; i < this.maxSize; i++) {
+            if (this.content[i].empty) {
                 this.content[i].equip(item);
                 return true;
             }
@@ -223,14 +223,14 @@ module.exports = class Inventory {
     }
 
     startUsing() {
-        if(this.content[this.selected].empty) {
+        if (this.content[this.selected].empty) {
             return;
         }
         this.content[this.selected].item.startUsing();
     }
 
     stopUsing() {
-        if(this.content[this.selected].empty) {
+        if (this.content[this.selected].empty) {
             return;
         }
         this.content[this.selected].item.stopUsing();
@@ -265,6 +265,9 @@ module.exports = {
 const Sheet = __webpack_require__(307);
 const Gamestate = __webpack_require__(147);
 const Weapons = __webpack_require__(45);
+const Utility = __webpack_require__(580);
+const Geometry = __webpack_require__(322);
+const Point = Geometry.Point;
 
 module.exports = class Player{
     constructor(position, health, inventory, id){
@@ -312,42 +315,46 @@ module.exports = class Player{
 
         this.itr = 0;
     }
-    update(){
+    update(walls){
         let movx = false , movy = false
 
-        if(Gamestate.isKeyPressed[65]){
-
-            this.dir = "left"
-            this.position.x -= this.delta
-            movx = true
-            this.delta += 0.1
-        }else if(Gamestate.isKeyPressed[68]){
-
-            this.dir = "right"
-            this.position.x += this.delta
-            movx = true
-            this.delta += 0.1
-        }else {
-
+        if (Gamestate.isKeyPressed[65]) {
+            // All collision detections done before movement to prevent getting stuck
+            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) - this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+                this.dir = "left"
+                this.position.x -= this.delta
+                movx = true
+                this.delta += 0.1
+            }
+        } else if (Gamestate.isKeyPressed[68]) {
+            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) + this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+                this.dir = "right"
+                this.position.x += this.delta
+                movx = true
+                this.delta += 0.1
+            }
+        } else {
             movx = false
         }
 
-        if(Gamestate.isKeyPressed[87]){
-
-            this.dir = "up"
-            this.position.y -= this.delta
-            movy = true
-            this.delta += 0.1
-        }else if(Gamestate.isKeyPressed[83]){
-
-            this.dir = "down"
-            this.position.y += this.delta
-            movy = true
-            this.delta += 0.1
-        }else{
+        if (Gamestate.isKeyPressed[87]) {
+            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) - this.delta), this.size.x, this.size.y, walls)) {
+                this.dir = "up"
+                this.position.y -= this.delta
+                movy = true
+                this.delta += 0.1
+            }
+        } else if (Gamestate.isKeyPressed[83]) {
+            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) + this.delta), this.size.x, this.size.y, walls)) {
+                this.dir = "down"
+                this.position.y += this.delta
+                movy = true
+                this.delta += 0.1
+            }
+        } else {
 
             movy = false
-        }
+        }   
 
         if((!movx && !movy)|| this.delta > 6){
             if(this.delta > 0){
@@ -424,15 +431,15 @@ const Gamestate = __webpack_require__(147);
 
 class Point {
     constructor(x, y) {
-            this.x=x
-            this.y=y
+        this.x = x
+        this.y = y
     }
-    draw() { 
+    draw() {
         Gamestate.context.fillRect(this.position.x - 5, this.position.y - 5, 10, 10);
     }
 }
 class Size {
-    constructor(width, height){
+    constructor(width, height) {
         this.width = width;
         this.height = height;
     }
@@ -443,7 +450,7 @@ class Line {
         this.begin = begin;
         this.end = end;
         this.recalculate();
-    }   
+    }
     // Draws the line(if needed)
     draw() {
         Gamestate.context.beginPath();
@@ -453,8 +460,8 @@ class Line {
     }
     recalculate() {
         // We check if the x coordinates of the starting and end point of the line, and if they are we move the starting point a bit to prevent an edge case
-        if(this.begin.x == this.end.x) {
-            this.begin.x += 0.1;            
+        if (this.begin.x == this.end.x) {
+            this.begin.x += 0.01;
         }
         // m and b are constants which help us determine a collision point between two lines 
         this.m = (this.begin.y - this.end.y) / (this.begin.x - this.end.x);
@@ -466,27 +473,27 @@ class Rectangle {
         this.position = position;
         this.size = size;
     }
-    draw(){
-        context.fillRect(this.position.x - (this.size.width/2), this.position.y - (this.size.height/2), this.size.width, this.size.height);
+    draw() {
+        context.fillRect(this.position.x - (this.size.width / 2), this.position.y - (this.size.height / 2), this.size.width, this.size.height);
     }
 }
 class Circle {
-    constructor(position, radius){
+    constructor(position, radius) {
         this.position = position;
         this.radius = radius;
     }
-    draw(){
+    draw() {
         context.beginPath();
         context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
         context.fill();
     }
 }
 module.exports = {
-    Point : Point,
-    Size : Size,
-    Line : Line,
-    Rectangle : Rectangle,
-    Circle : Circle
+    Point: Point,
+    Size: Size,
+    Line: Line,
+    Rectangle: Rectangle,
+    Circle: Circle
 };
 
 /***/ }),
@@ -525,8 +532,8 @@ module.exports = class Sheet {
 const Geometry = __webpack_require__(322);
 const Point = Geometry.Point;
 
-module.exports = class Utility{
-    constructor(){}
+module.exports = class Utility {
+    constructor() { }
     static distance(a, b) {
         return Math.hypot(a.x - b.x, a.y - b.y);
     }
@@ -534,24 +541,24 @@ module.exports = class Utility{
     static fixWallRayIntersection(line, ray, intersection) {
         // This makes the light ray shine only in front of you
         let isBetweenx = false, isBetweeny = false;
-        if((ray.end.x <= ray.begin.x && ray.begin.x <= intersection.x) || (ray.end.x >= ray.begin.x && ray.begin.x >= intersection.x)) {
+        if ((ray.end.x <= ray.begin.x && ray.begin.x <= intersection.x) || (ray.end.x >= ray.begin.x && ray.begin.x >= intersection.x)) {
             isBetweenx = true;
         }
-        if((ray.end.y <= ray.begin.y && ray.begin.y <= intersection.y) || (ray.end.y >= ray.begin.y && ray.begin.y >= intersection.y)) {
+        if ((ray.end.y <= ray.begin.y && ray.begin.y <= intersection.y) || (ray.end.y >= ray.begin.y && ray.begin.y >= intersection.y)) {
             isBetweeny = true;
         }
-        if(isBetweeny && isBetweenx) {
+        if (isBetweeny && isBetweenx) {
             return false;
         }
         // This checks if the light collides with a wall, and not the ray it lays on
         isBetweenx = false, isBetweeny = false;
-        if((line.begin.x <= intersection.x && intersection.x <= line.end.x) || (line.begin.x >= intersection.x && intersection.x >= line.end.x)) {
+        if ((line.begin.x <= intersection.x && intersection.x <= line.end.x) || (line.begin.x >= intersection.x && intersection.x >= line.end.x)) {
             isBetweenx = true;
         }
-        if((line.begin.y <= intersection.y && intersection.y <= line.end.y) || (line.begin.y >= intersection.y && intersection.y >= line.end.y)) {
+        if ((line.begin.y <= intersection.y && intersection.y <= line.end.y) || (line.begin.y >= intersection.y && intersection.y >= line.end.y)) {
             isBetweeny = true;
         }
-        if(!isBetweeny || !isBetweenx) {
+        if (!isBetweeny || !isBetweenx) {
             return false;
         }
         return true;
@@ -564,44 +571,66 @@ module.exports = class Utility{
         let y = x * wall.m + wall.b;
         // The point of contact between the ray and wall
         let answerPoint = new Point(x, y);
-        if(this.fixWallRayIntersection(wall, ray, answerPoint)) {
-            return answerPoint;        
+        if (this.fixWallRayIntersection(wall, ray, answerPoint)) {
+            return answerPoint;
         } else {
             return false;
         }
     }
     // Checks for collision between a circle and rectangle
-    static rectCircleColliding(circle,rect){
-        let distX = Math.abs(circle.x - rect.pos.x - rect.size.x/2);
-        let distY = Math.abs(circle.y - rect.pos.y - rect.size.y/2);
-        let dx = distX-rect.size.x/2;
-        let dy = distY-rect.size.y/2;
+    static rectCircleColliding(circle, rect) {
+        let distX = Math.abs(circle.x - rect.pos.x - rect.size.x / 2);
+        let distY = Math.abs(circle.y - rect.pos.y - rect.size.y / 2);
+        let dx = distX - rect.size.x / 2;
+        let dy = distY - rect.size.y / 2;
 
-        if (distX > (rect.size.x/2 + circle.radius) || distY > (rect.size.y/2 + circle.radius)) {
-            return false; 
+        if (distX > (rect.size.x / 2 + circle.radius) || distY > (rect.size.y / 2 + circle.radius)) {
+            return false;
         }
 
-        if ((distX < (rect.size.x/2) || distY < (rect.size.y/2)) || (dx * dx + dy * dy <= (circle.radius * circle.radius))) {
-            return true; 
+        if ((distX < (rect.size.x / 2) || distY < (rect.size.y / 2)) || (dx * dx + dy * dy <= (circle.radius * circle.radius))) {
+            return true;
         }
         return undefined;
     }
-    static areCirclesColliding(x1, y1, r1, x2, y2, r2){
-        let dist = Math.sqrt((x1-x2)(x1-x2) + (y1-y2)(y1-y2))
-        return dist<=r1+r2; 
+    static areCirclesColliding(x1, y1, r1, x2, y2, r2) {
+        let dist = Math.sqrt((x1 - x2)(x1 - x2) + (y1 - y2)(y1 - y2))
+        return dist <= r1 + r2;
     }
     static areColliding(Ax, Ay, Awidth, Aheight, Bx, By, Bwidth, Bheight) {
-    if (Bx <= Ax + Awidth) {
-        if (Ax <= Bx + Bwidth) {
-            if (By <= Ay + Aheight) {
-                if (Ay <= By + Bheight) {
+        if (Bx <= Ax + Awidth) {
+            if (Ax <= Bx + Bwidth) {
+                if (By <= Ay + Aheight) {
+                    if (Ay <= By + Bheight) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    };
+    static boxWallsColliding(box, boxSizeX, boxSizeY, walls) {
+        for (let i = 0; i < walls.length; i++) {
+            if (walls[i].begin.x - 0.01 == walls[i].end.x) {
+                walls[i].begin.x -= 0.01
+            }
+            if (walls[i].begin.x + 0.01 == walls[i].end.x) {
+                walls[i].begin.x += 0.01
+            }
+            // Checks for colision between a box and any horizontal/vertical wall
+            if (walls[i].begin.y == walls[i].end.y) {
+                if (this.areColliding(box.x, box.y, boxSizeX, boxSizeY, walls[i].begin.x, walls[i].begin.y, Math.abs(walls[i].begin.x - walls[i].end.x), 1)) {
+                    return true;
+                }
+            }
+            else if (walls[i].begin.x == walls[i].end.x) {
+                    if (this.areColliding(box.x, box.y, boxSizeX, boxSizeY, walls[i].begin.x, walls[i].begin.y, 1, Math.abs(walls[i].begin.y - walls[i].end.y))) {
                     return true;
                 }
             }
         }
+        return false;
     }
-    return false;
-};
 }
 
 
@@ -628,6 +657,28 @@ class Projectile { // Abstract class, please don't create any objects of this ty
     draw(){}
     isColliding(rect){}
 }
+class BasicBullet extends Projectile {
+    constructor(position, delta, damage, radius = 5) {
+        super(position, delta, damage);
+        this.radius = radius;
+    }
+    update() {   
+        this.position.x += this.delta.x;
+        this.position.y += this.delta.y;
+    }
+    draw() {
+        Gamestate.context.beginPath();
+        Gamestate.context.fillStyle = "blue";
+        Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.fill();
+    }
+    calculateDamage() {
+        return this.damage;
+    }
+    isColliding(rect){
+        return rectCircleColliding(this, player);
+    }
+}
 
 class Fireball extends Projectile {
     constructor(position, delta, damage, radius = 15) {
@@ -640,9 +691,9 @@ class Fireball extends Projectile {
     }
     draw() {
         Gamestate.context.beginPath();
+        Gamestate.context.fillStyle = "yellow";
         Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
-        Gamestate.context.stroke();
     }
     calculateDamage() {
         return this.damage;
@@ -742,7 +793,8 @@ module.exports = {
     Fireball: Fireball,
     Arrow: Arrow, 
     Bubble: Bubble, 
-    Grenade: Grenade
+    Grenade: Grenade,
+    BasicBullet: BasicBullet
 }
 
 /***/ }),
@@ -814,7 +866,7 @@ class BasicGun extends Weapons{
 			let dist = Utility.distance(shotFrom, shotTo);
 			let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
 			let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-			this.bullets.push(new Bullets.Fireball(
+			this.bullets.push(new Bullets.BasicBullet(
 			new Point(shotFrom.x, shotFrom.y), 
 			new Point(deltaX, deltaY), 69));
 			this.cooldown = this.reloadRate;
@@ -859,7 +911,7 @@ class AK47 extends Weapons{
 				let dist = Utility.distance(shotFrom, shotTo);
 				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
 				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-				this.bullets.push(new Bullets.Fireball(
+				this.bullets.push(new Bullets.BasicBullet(
 				new Point(shotFrom.x, shotFrom.y), 
 				new Point(deltaX, deltaY), 69));
 				this.cooldown = this.reloadRate;
@@ -902,30 +954,30 @@ class Shotgun extends Weapons{
 			let shotTo = Gamestate.mousePosition;			
 			let dist = Utility.distance(shotFrom, shotTo);
 			let speed = []
-			for(let i = 0;i < 7;i++){
+			for(let i = 0; i < 7; i++){
 				speed[i] = Math.random()*3+3;
 			}
 			let deltaX = (shotTo.x - shotFrom.x) / dist * speed[1];
 			let deltaY = (shotTo.y - shotFrom.y) / dist * speed[1];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[2];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[2];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.15, deltaY+0.15), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.15, deltaY+0.15), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[3];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[3];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.15, deltaY-0.15), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.15, deltaY-0.15), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[4];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[4];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.30, deltaY+0.30), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.30, deltaY+0.30), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[5];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[5];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.30, deltaY-0.30), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.30, deltaY-0.30), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[6];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[6];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.45, deltaY-0.45), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.45, deltaY-0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
-			this.bullets.push(new Bullets.Fireball(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
 
@@ -996,26 +1048,23 @@ class Game extends Basegame {
         this.intersections = [];
 
         this.walls.push(new Line(new Point(0, 0), new Point(800, 0)));
-        this.walls.push(new Line(new Point(800, 600), new Point(800, 0)));
-        this.walls.push(new Line(new Point(800, 600), new Point(0, 600)));
-        this.walls.push(new Line(new Point(0, 0), new Point(0, 600, 1)));
-
-        for (let i = 0; i < Math.random() * 4 + 1; i++) {
-            this.walls.push(new Line(new Point(Math.random() * 300, Math.random() * 300), new Point(Math.random() * 300, Math.random() * 300)));
-        }
+        this.walls.push(new Line(new Point(800, 0), new Point(800, 600)));
+        this.walls.push(new Line(new Point(0, 600), new Point(800, 600)));
+        this.walls.push(new Line(new Point(0, 0), new Point(0, 600)));
+        this.walls.push(new Line(new Point(300, 100), new Point(300, 300)));
 
         this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
 
-        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 10));
+        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70));
         this.player.inventory.equipItem(new Weapons.AK47(this.player, 30));
-        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 100));
+        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150));
 
         this.lighting = new Lighting(this.walls);
     }
 
     update() {
         this.intersections = this.lighting.drawLight(this.player.position);
-        this.player.update();
+        this.player.update(this.walls);
         this.player.inventory.update();
     }
 
@@ -1032,7 +1081,7 @@ class Game extends Basegame {
         this.lighting.drawLight(this.player.position)
 
         Gamestate.context.strokeStyle = "red"
-        Gamestate.context.lineWidth = 3;
+        Gamestate.context.lineWidth = 1;
         for (let i = 0; i < this.walls.length; i++) {
             this.walls[i].draw();
         }
