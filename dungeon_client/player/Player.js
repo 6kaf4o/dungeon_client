@@ -56,14 +56,20 @@ module.exports = class Player{
 
         if (Gamestate.isKeyPressed[65]) {
             // All collision detections done before movement to prevent getting stuck 
-            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) - this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                new Point((this.position.x - this.size.x / 2) - this.delta, 
+                this.position.y - this.size.y / 2), 
+            this.size.x, this.size.y, walls)) {
                 this.dir = "left"
                 this.position.x -= this.delta
                 movx = true
                 this.delta += 0.1
             }
         } else if (Gamestate.isKeyPressed[68]) {
-            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) + this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                new Point((this.position.x - this.size.x / 2) + this.delta,
+                this.position.y - this.size.y / 2), 
+            this.size.x, this.size.y, walls)) {
                 this.dir = "right"
                 this.position.x += this.delta
                 movx = true
@@ -74,14 +80,20 @@ module.exports = class Player{
         }
 
         if (Gamestate.isKeyPressed[87]) {
-            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) - this.delta), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                new Point(this.position.x - this.size.x / 2,
+                (this.position.y - this.size.y / 2) - this.delta), 
+            this.size.x, this.size.y, walls)) {
                 this.dir = "up"
                 this.position.y -= this.delta
                 movy = true
                 this.delta += 0.1
             }
         } else if (Gamestate.isKeyPressed[83]) {
-            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) + this.delta), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                new Point(this.position.x - this.size.x / 2, 
+                (this.position.y - this.size.y / 2) + this.delta), 
+            this.size.x, this.size.y, walls)) {
                 this.dir = "down"
                 this.position.y += this.delta
                 movy = true
