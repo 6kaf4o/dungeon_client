@@ -154,7 +154,7 @@ class Shotgun extends Weapons{
 			this.bullets[i].update();
 		}
 		for(let i = 0; i < this.bullets.length; i++) {
-			if(Utility.boxWallsColliding(this.bullets[i].position,10,10,Maze.walls)){
+			if(Utility.boxWallsColliding(this.bullets[i].position,5,5,Maze.walls)){
 				this.bullets[i] = this.bullets[this.bullets.length-1];
 				this.bullets.pop();
 				--i;
