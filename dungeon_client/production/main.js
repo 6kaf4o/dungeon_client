@@ -1032,6 +1032,8 @@ class AK47 extends Weapons {
                     this.cooldown = this.reloadRate;
                     this.ammo--;
                 }
+				shotTo.x -= camera.pos.x;
+				shotTo.y -= camera.pos.y;
             }
         }
         //	console.log(this.ammo);
@@ -1086,6 +1088,8 @@ class Shotgun extends Weapons {
                 deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
                 this.ammo--;
                 this.cooldown = this.reloadRate;
+				shotTo.x -= camera.pos.x;
+				shotTo.y -= camera.pos.y;
             }
         }
     }
