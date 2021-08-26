@@ -1,34 +1,37 @@
-const Player = require('/player/Player.js');
 const Camera = require('/camera/Camera.js');
+const Player = require('/player/Player.js');
 const Inventory = require('/player/Inventory.js');
 const Lighting = require('/light/Lighting.js');
 const Gamestate = require('/framework/State.js');
 const Basegame = require('/framework/Framework.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
-const Size = Geometry.Size;
 const Line = Geometry.Line;
+const Size = Geometry.Size;
 const Weapons = require('/weapons/Weapon.js');
 const Maze = require('/utilities/Maze.js');
+const Minimap = require('/camera/Minimap.js');
 
 class Game extends Basegame {
     constructor() {
         super();
 
         this.intersections = [];
+        this.players = [];
 
-        this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
-        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70, 20));
-        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30, 60));
-        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150, 8));
+        this.players.push(new Player(new Point(100, 100), 100, new Inventory(10), 0));
+        this.minimap = new Minimap(new Size(800, 600), new Size(800, 600), new Size(200, 200))
+        this.players[0].inventory.equipItem(new Weapons.BasicGun(this.players[0], 70,20));
+        this.players[0].inventory.equipItem(new Weapons.AK47(this.players[0], 30,60));
+        this.players[0].inventory.equipItem(new Weapons.Shotgun(this.players[0], 150,8));
         this.lighting = new Lighting(Maze.walls);
         this.camera = new Camera(new Point(800, 600), new Point(800, 600))
     }
 
     update() {
-        this.camera.follow(this.player)
-        this.intersections = this.lighting.getIntersections(this.player.position);
-        this.player.update(this.walls , this.camera);
+        this.camera.follow(this.players[0])
+        this.intersections = this.lighting.drawLight(this.players[0].position);
+        this.players[0].update();
     }
 
     draw() {
@@ -42,27 +45,27 @@ class Game extends Basegame {
             Gamestate.context.lineTo(drawPosition.x, drawPosition.y)
         }
         Gamestate.context.fill()
-
-        let curdrawplayerpos = this.camera.calculate_pos(this.player.position)
+        let curdrawplayerpos = this.camera.calculate_pos(this.players[0].position)
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
-        this.player.draw(this.camera);
+        this.players[0].draw(this.camera);
         for (let i = 0; i < Maze.walls.length; i++) {
             Maze.walls[i].draw(this.camera);
         }
 
-        this.player.draw(this.camera);
+        this.players[0].draw(this.camera);
 
-        this.player.inventory.getSelected().drawImg(this.player.position, new Size(75, 75), this.camera);
+        this.players[0].inventory.getSelected().drawImg(this.players[0].position, new Size(100, 100));
+        this.minimap.draw(new Point(600, 0),this.players)
     }
 
     mousedown() {
-        this.player.startUsing();
+        this.players[0].startUsing();
     }
 
     mouseup() {
-        this.player.stopUsing();
+        this.players[0].stopUsing();
     }
 
     keydown(key) {}

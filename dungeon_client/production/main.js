@@ -42,6 +42,59 @@ module.exports = class Camera {
 
 /***/ }),
 
+/***/ 622:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Player = __webpack_require__(94);
+const Maze = __webpack_require__(864);
+const Gamestate = __webpack_require__(147);
+const Geometry = __webpack_require__(322);
+const Point = Geometry.Point;
+const Line = Geometry.Line;
+const Size = Geometry.Size;
+module.exports = class Minimap{
+    constructor(sizeMap, sizeCamera, sizeMinimap){
+        this.sizeMap = sizeMap;
+        this.sizeCamera = sizeCamera;
+        this.sizeMinimap = sizeMinimap;
+        this.scale = new Size(this.sizeMap.width / this.sizeMinimap.width, this.sizeMap.height / this.sizeMinimap.height);
+    }
+    /*updatePlayers(players){
+        this.players=players
+    }*/
+    draw(point,players){
+        this.players = [];
+        this.walls = [];
+        for(let i = 0; i < Maze.walls.length; i++){
+            this.walls.push(new Line(new Point(Maze.walls[i].begin.x, Maze.walls[i].begin.y), new Point(Maze.walls[i].end.x, Maze.walls[i].end.y)));
+        }
+        for(let i = 0; i < players.length; i++){
+            this.players.push(new Player(new Point(players[0].position.x, players[0].position.y), players[0].health, players[0].inventory, players[0].id));
+        }
+        this.pos = point;
+
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i].size.x/=this.scale.width
+            this.players[i].size.y/=this.scale.height
+            this.players[i].position.x = this.players[i].position.x/this.scale.width + 600;
+            this.players[i].position.y = this.players[i].position.y/this.scale.height;
+            this.players[i].draw();
+        }
+        Gamestate.context.strokeStyle = "rgba(255, 0, 0, 0.3)";
+        Gamestate.context.lineWidth = 1;
+        for(let i = 0; i < this.walls.length; i++){
+            this.walls[i].begin.x = this.walls[i].begin.x/this.scale.width + 600;
+            this.walls[i].end.x = this.walls[i].end.x/this.scale.width + 600;
+            this.walls[i].begin.y = this.walls[i].begin.y/this.scale.height;
+            this.walls[i].end.y = this.walls[i].end.y/this.scale.height;
+            this.walls[i].draw();
+        }
+    }
+}
+
+
+/***/ }),
+
 /***/ 313:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -1133,37 +1186,40 @@ module.exports = {
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const Player = __webpack_require__(94);
 const Camera = __webpack_require__(741);
+const Player = __webpack_require__(94);
 const Inventory = __webpack_require__(825);
 const Lighting = __webpack_require__(732);
 const Gamestate = __webpack_require__(147);
 const Basegame = __webpack_require__(313);
 const Geometry = __webpack_require__(322);
 const Point = Geometry.Point;
-const Size = Geometry.Size;
 const Line = Geometry.Line;
+const Size = Geometry.Size;
 const Weapons = __webpack_require__(45);
 const Maze = __webpack_require__(864);
+const Minimap = __webpack_require__(622);
 
 class Game extends Basegame {
     constructor() {
         super();
 
         this.intersections = [];
+        this.players = [];
 
-        this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
-        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70, 20));
-        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30, 60));
-        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150, 8));
+        this.players.push(new Player(new Point(100, 100), 100, new Inventory(10), 0));
+        this.minimap = new Minimap(new Size(800, 600), new Size(800, 600), new Size(200, 200))
+        this.players[0].inventory.equipItem(new Weapons.BasicGun(this.players[0], 70,20));
+        this.players[0].inventory.equipItem(new Weapons.AK47(this.players[0], 30,60));
+        this.players[0].inventory.equipItem(new Weapons.Shotgun(this.players[0], 150,8));
         this.lighting = new Lighting(Maze.walls);
         this.camera = new Camera(new Point(800, 600), new Point(800, 600))
     }
 
     update() {
-        this.camera.follow(this.player)
-        this.intersections = this.lighting.getIntersections(this.player.position);
-        this.player.update(this.walls , this.camera);
+        this.camera.follow(this.players[0])
+        this.intersections = this.lighting.drawLight(this.players[0].position);
+        this.players[0].update();
     }
 
     draw() {
@@ -1177,27 +1233,27 @@ class Game extends Basegame {
             Gamestate.context.lineTo(drawPosition.x, drawPosition.y)
         }
         Gamestate.context.fill()
-
-        let curdrawplayerpos = this.camera.calculate_pos(this.player.position)
+        let curdrawplayerpos = this.camera.calculate_pos(this.players[0].position)
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
-        this.player.draw(this.camera);
+        this.players[0].draw(this.camera);
         for (let i = 0; i < Maze.walls.length; i++) {
             Maze.walls[i].draw(this.camera);
         }
 
-        this.player.draw(this.camera);
+        this.players[0].draw(this.camera);
 
-        this.player.inventory.getSelected().drawImg(this.player.position, new Size(75, 75), this.camera);
+        this.players[0].inventory.getSelected().drawImg(this.players[0].position, new Size(100, 100));
+        this.minimap.draw(new Point(600, 0),this.players)
     }
 
     mousedown() {
-        this.player.startUsing();
+        this.players[0].startUsing();
     }
 
     mouseup() {
-        this.player.stopUsing();
+        this.players[0].stopUsing();
     }
 
     keydown(key) {}
@@ -1205,6 +1261,7 @@ class Game extends Basegame {
 
 let game = new Game();
 game.init();
+
 })();
 
 /******/ })()
