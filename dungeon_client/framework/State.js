@@ -1,8 +1,10 @@
-let canvas, context, mousePosition, isKeyPressed, isMouseDown;
+let canvas, context, mousePosition, isKeyPressed, isMouseDown, deltaTime, absoluteTime;
 module.exports = {
     canvas,
     context,
     mousePosition,
     isKeyPressed,
-    isMouseDown
+    isMouseDown,
+    deltaTime,
+    absoluteTime
 };
