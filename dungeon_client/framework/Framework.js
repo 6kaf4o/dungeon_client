@@ -42,7 +42,9 @@ module.exports = class Basegame { // Abstract class
         }
     }
 
-    init() {        
+    init() {
+        Gamestate.absoluteTime = 0;
+        
         Gamestate.canvas = document.getElementById("canvas-id");
 
         Gamestate.canvas.width = 800;
@@ -62,10 +64,16 @@ module.exports = class Basegame { // Abstract class
         window.addEventListener("mousemove", this);
 
         this.redraw();
-        setInterval(this.update.bind(this), 10);
+        setInterval(this.updateStart.bind(this), 10);
     }
 
     draw() {}
+    updateStart() {
+        let timestamp = performance.now();
+        this.update();
+        Gamestate.deltaTime = performance.now() - timestamp;
+        Gamestate.absoluteTime += performance.now() - timestamp;
+    }
     update() {}
     keyup(key) {}
     keydown(key) {}

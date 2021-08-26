@@ -15,23 +15,34 @@ class Weapons { // TODO: Abstract class
 		this.alreadyShot = true;
 		this.ammo=ammo;
 	}
-		
-	startUsing() {}
-	stopUsing() {}
 
-	equip(newOwner) {this.owner = owner;}
-	unequip() {}
+	startUsing() {
+		this.alreadyShot = false;
+	}
+
+	stopUsing() {
+		this.alreadyShot = true;
+	}
+
+	equip(newOwner) { this.owner = newOwner; }
+	unequip() { }
 
 	update() {
-		for(let i = 0; i < this.bullets.length; i ++) {
+		for (let i in this.bullets) {
 			this.bullets[i].update();
-		}		
+			if (Utility.boxWallsColliding(this.bullets[i].position, 10, 10, Maze.walls)) {
+				this.bullets[i] = this.bullets[this.bullets.length - 1];
+				this.bullets.pop();
+				--i;
+			}
+		}
+		this.cooldown--;
+		if (this.cooldown > 0) return;
+		this.inferiorUpdate();
 	}
 
 	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
+		for (let i of this.bullets) i.draw();
 	}
 }
 
@@ -44,29 +55,14 @@ class BasicGun extends Weapons{
 
 	}
 
-	startUsing() {
-		this.alreadyShot = false;
-	}
 	stopUsing() {}
 
-	update() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}	
-		for(let i = 0; i < this.bullets.length; i++) {
-				if(Utility.boxWallsColliding(this.bullets[i].position,10,10,Maze.walls)){
-					this.bullets[i] = this.bullets[this.bullets.length-1];
-					this.bullets.pop();
-					--i;
-				}
-		}
-		this.cooldown--;
+	inferiorUpdate() {
 	//	console.log(this.ammo);
 	if(Gamestate.isKeyPressed[32]){
 		this.cooldown = 800;
 		this.ammo=20;
 	}
-		if(this.cooldown > 0) {return;}
 		if(this.ammo>0){
 			if(!this.alreadyShot) {
 				let shotFrom = this.owner.position;
@@ -84,12 +80,6 @@ class BasicGun extends Weapons{
 			}
 		}
 	}
-
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
-	}
 }
 
 
@@ -100,41 +90,22 @@ class AK47 extends Weapons{
 		this.sprite = new Image();
 		this.sprite.src = '../production/images/assaultRifle.png';
 	}
-
-	startUsing() {
-		this.alreadyShot = false;
-	}
-	stopUsing() {
-		this.alreadyShot=true; 
-	}
-	update() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}	
-		for(let i = 0; i < this.bullets.length; i++) {
-			if(Utility.boxWallsColliding(this.bullets[i].position,10,10,Maze.walls)){
-				this.bullets[i] = this.bullets[this.bullets.length-1];
-				this.bullets.pop();
-				--i;
-			}
-	}
+	inferiorUpdate() {
 	if(Gamestate.isKeyPressed[32]){
 		this.cooldown = 600;
 		this.ammo=60;
 	}
-		this.cooldown --;
-		if(this.cooldown > 0) {return;}
 		if(this.ammo>0){
 		if(!this.alreadyShot) {
 			let shotFrom = this.owner.position;
 			let shotTo = Gamestate.mousePosition;
-			if(this.alreadyShot==false){
+			if (this.alreadyShot == false) {
 				let dist = Utility.distance(shotFrom, shotTo);
 				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
 				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
 				this.bullets.push(new Bullets.BasicBullet(
-				new Point(shotFrom.x, shotFrom.y), 
-				new Point(deltaX, deltaY), 69));
+					new Point(shotFrom.x, shotFrom.y),
+					new Point(deltaX, deltaY), 69));
 				this.cooldown = this.reloadRate;
 				this.ammo--;
 				console.log(this.ammo);
@@ -144,12 +115,7 @@ class AK47 extends Weapons{
 //	console.log(this.ammo);
 	} 
 
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
 	}
-}
 class Shotgun extends Weapons{
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
 	constructor(owner,reloadRate,ammo) {
@@ -157,61 +123,41 @@ class Shotgun extends Weapons{
 		this.sprite = new Image();
 		this.sprite.src = '../production/images/shotgun.png';
 	}
-	
-	startUsing() {
-		this.alreadyShot = false;
-	}
-	stopUsing() {
-		this.alreadyShot=true; 
-	}
-	update() { 	
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}
-		for(let i = 0; i < this.bullets.length; i++) {
-			if(Utility.boxWallsColliding(this.bullets[i].position,5,5,Maze.walls)){
-				this.bullets[i] = this.bullets[this.bullets.length-1];
-				this.bullets.pop();
-				--i;
-			}
-	}
+	inferiorUpdate() { 	
 	if(Gamestate.isKeyPressed[32]){
 		this.cooldown = 700;
 		this.ammo=8;
 	}
-		this.cooldown--;	
-	//	console.log(this.ammo);
-		if(this.cooldown > 0) {return;}
 		if(this.ammo>0){
 		if(!this.alreadyShot) {
 			let shotFrom = this.owner.position;
-			let shotTo = Gamestate.mousePosition;			
+			let shotTo = Gamestate.mousePosition;
 			let dist = Utility.distance(shotFrom, shotTo);
 			let speed = []
-			for(let i = 0; i < 7; i++){
-				speed[i] = Math.random()*3+3;
+			for (let i = 0; i < 7; i++) {
+				speed[i] = Math.random() * 3 + 3;
 			}
 			let deltaX = (shotTo.x - shotFrom.x) / dist * speed[1];
 			let deltaY = (shotTo.y - shotFrom.y) / dist * speed[1];
 			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[2];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[2];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.15, deltaY+0.15), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX + 0.15, deltaY + 0.15), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[3];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[3];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.15, deltaY-0.15), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX - 0.15, deltaY - 0.15), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[4];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[4];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.30, deltaY+0.30), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX + 0.30, deltaY + 0.30), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[5];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[5];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.30, deltaY-0.30), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX - 0.30, deltaY - 0.30), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[6];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[6];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.45, deltaY-0.45), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX - 0.45, deltaY - 0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
+			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX + 0.45, deltaY + 0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
 			this.ammo--;
@@ -219,12 +165,6 @@ class Shotgun extends Weapons{
 			this.cooldown = this.reloadRate;
 		}	
 	}	
-	}
-
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
 	}
 }
 module.exports = {
