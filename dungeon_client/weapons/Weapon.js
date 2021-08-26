@@ -28,6 +28,7 @@ class Weapons { // TODO: Abstract class
 
 	update() {
 		for (let i in this.bullets) {
+			this.bullets[i].update();
 			if (Utility.boxWallsColliding(this.bullets[i].position, 10, 10, Maze.walls)) {
 				this.bullets[i] = this.bullets[this.bullets.length - 1];
 				this.bullets.pop();
