@@ -48,8 +48,9 @@ module.exports = class Inventory {
     update() {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
-                this.getSelected().stopUsing();
+                if (this.getSelected()) this.getSelected().stopUsing();
                 if (this.maxSize > i - 49) this.selected = i - 49; // why are we still using event.keyCode
+                if (Gamestate.isMouseDown) this.getSelected().startUsing();
             }
         }
 
