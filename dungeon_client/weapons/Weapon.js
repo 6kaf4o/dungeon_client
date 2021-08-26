@@ -38,12 +38,13 @@ class Weapons { // TODO: Abstract class
 			}
 		}
 		this.cooldown--;
-		if (this.cooldown > 0) return;
 		if(Gamestate.isKeyPressed[32]){
-			this.cooldown = 800;
+			this.cooldown = 500;
 			this.ammo=this.maxAmmo;
 		}
+		if (this.cooldown > 0) return;
 		this.inferiorUpdate();
+		
 	}
 
 	draw() {
@@ -69,8 +70,8 @@ class BasicGun extends Weapons{
 				let shotFrom = this.owner.position;
 				let shotTo = Gamestate.mousePosition;
 				let dist = Utility.distance(shotFrom, shotTo);
-				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
-				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
+				let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
+				let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
 				this.bullets.push(new Bullets.BasicBullet(
 				new Point(shotFrom.x, shotFrom.y), 
 				new Point(deltaX, deltaY), 69));
@@ -102,8 +103,8 @@ class AK47 extends Weapons{
 			let shotTo = Gamestate.mousePosition;
 			if (this.alreadyShot == false) {
 				let dist = Utility.distance(shotFrom, shotTo);
-				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
-				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
+				let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
+				let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
 				this.bullets.push(new Bullets.BasicBullet(
 					new Point(shotFrom.x, shotFrom.y),
 					new Point(deltaX, deltaY), 69));
