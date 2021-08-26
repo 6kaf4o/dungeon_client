@@ -7,12 +7,13 @@ const Line = Geometry.Line;
 const Gamestate = require('/framework/State.js');
 const Maze = require('/utilities/Maze.js');
 class Weapons { // TODO: Abstract class
-	constructor(owner, reloadRate) {
+	constructor(owner, reloadRate,ammo) {
 		this.bullets = [];
 		this.owner = owner;
 		this.cooldown = 0;
 		this.reloadRate = reloadRate;
 		this.alreadyShot = true;
+		this.ammo=ammo;
 	}
 		
 	startUsing() {}
@@ -36,8 +37,8 @@ class Weapons { // TODO: Abstract class
 
 class BasicGun extends Weapons{
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-	constructor(owner,reloadRate) {
-		super(owner, reloadRate);
+	constructor(owner,reloadRate,ammo) {
+		super(owner, reloadRate,ammo);
 		this.sprite = new Image();
 		this.sprite.src = '../production/images/pistol.png';
 
@@ -60,20 +61,27 @@ class BasicGun extends Weapons{
 				}
 		}
 		this.cooldown--;
-
+	//	console.log(this.ammo);
+	if(Gamestate.isKeyPressed[32]){
+		this.cooldown = 800;
+		this.ammo=20;
+	}
 		if(this.cooldown > 0) {return;}
-
-		if(!this.alreadyShot) {
-			let shotFrom = this.owner.position;
-			let shotTo = Gamestate.mousePosition;
-			let dist = Utility.distance(shotFrom, shotTo);
-			let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
-			let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-			this.bullets.push(new Bullets.BasicBullet(
-			new Point(shotFrom.x, shotFrom.y), 
-			new Point(deltaX, deltaY), 69));
-			this.cooldown = this.reloadRate;
-			this.alreadyShot = true;
+		if(this.ammo>0){
+			if(!this.alreadyShot) {
+				let shotFrom = this.owner.position;
+				let shotTo = Gamestate.mousePosition;
+				let dist = Utility.distance(shotFrom, shotTo);
+				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
+				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
+				this.bullets.push(new Bullets.BasicBullet(
+				new Point(shotFrom.x, shotFrom.y), 
+				new Point(deltaX, deltaY), 69));
+				this.cooldown = this.reloadRate;
+				this.alreadyShot = true;
+				this.ammo--;
+				console.log(this.ammo);
+			}
 		}
 	}
 
@@ -87,8 +95,8 @@ class BasicGun extends Weapons{
 
 class AK47 extends Weapons{
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-	constructor(owner,reloadRate) {
-		super(owner, reloadRate);
+	constructor(owner,reloadRate,ammo) {
+		super(owner, reloadRate,ammo);
 		this.sprite = new Image();
 		this.sprite.src = '../production/images/assaultRifle.png';
 	}
@@ -110,9 +118,13 @@ class AK47 extends Weapons{
 				--i;
 			}
 	}
+	if(Gamestate.isKeyPressed[32]){
+		this.cooldown = 600;
+		this.ammo=60;
+	}
 		this.cooldown --;
 		if(this.cooldown > 0) {return;}
-
+		if(this.ammo>0){
 		if(!this.alreadyShot) {
 			let shotFrom = this.owner.position;
 			let shotTo = Gamestate.mousePosition;
@@ -124,9 +136,12 @@ class AK47 extends Weapons{
 				new Point(shotFrom.x, shotFrom.y), 
 				new Point(deltaX, deltaY), 69));
 				this.cooldown = this.reloadRate;
+				this.ammo--;
+				console.log(this.ammo);
 			}
 		}
-	
+	}
+//	console.log(this.ammo);
 	} 
 
 	draw() {
@@ -137,8 +152,8 @@ class AK47 extends Weapons{
 }
 class Shotgun extends Weapons{
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-	constructor(owner,reloadRate) {
-		super(owner, reloadRate);
+	constructor(owner,reloadRate,ammo) {
+		super(owner, reloadRate,ammo);
 		this.sprite = new Image();
 		this.sprite.src = '../production/images/shotgun.png';
 	}
@@ -160,10 +175,14 @@ class Shotgun extends Weapons{
 				--i;
 			}
 	}
+	if(Gamestate.isKeyPressed[32]){
+		this.cooldown = 700;
+		this.ammo=8;
+	}
 		this.cooldown--;	
-
+	//	console.log(this.ammo);
 		if(this.cooldown > 0) {return;}
-
+		if(this.ammo>0){
 		if(!this.alreadyShot) {
 			let shotFrom = this.owner.position;
 			let shotTo = Gamestate.mousePosition;			
@@ -195,9 +214,11 @@ class Shotgun extends Weapons{
 			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
 			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
 			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
-
+			this.ammo--;
+			console.log(this.ammo);
 			this.cooldown = this.reloadRate;
-		}		
+		}	
+	}	
 	}
 
 	draw() {

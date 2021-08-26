@@ -17,10 +17,9 @@ class Game extends Basegame {
 
         this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
 
-        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70));
-        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30));
-        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150));
-
+        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70,20));
+        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30,60));
+        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150,8));
         this.lighting = new Lighting(Maze.walls);
     }
 
