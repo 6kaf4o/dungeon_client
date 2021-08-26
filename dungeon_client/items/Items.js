@@ -1,3 +1,5 @@
+// Note: this code has not been tested extensively
+
 const Player = require('../player/Player.js');
 
 class Item {
