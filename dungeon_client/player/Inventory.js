@@ -13,7 +13,8 @@ module.exports = class Inventory {
         this.ammo = [];
     }
 
-    draw() {
+    draw(camera) {
+        let cam = camera
         const w = Gamestate.canvas.width,
             h = Gamestate.canvas.height;
         const slotSize = w / 16;
@@ -24,7 +25,8 @@ module.exports = class Inventory {
 
         for (let i = 0; i < this.maxSize; i++) {
             if (!this.content[i].empty) {
-                this.content[i].item.draw();
+                console.log("Inventory cam :", camera)
+                this.content[i].item.draw(cam);
                 Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
             }
         }

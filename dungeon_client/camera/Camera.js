@@ -8,7 +8,6 @@ module.exports = class Camera {
 
     //follow() reqires a Point class to follow and updates the cameras position
     follow(a) {
-        console.log(a)
         this.pos.x = a.position.x - this.cameraSize.x / 2;
         this.pos.y = a.position.y - this.cameraSize.y / 2;
         if (this.pos.x < 0) {

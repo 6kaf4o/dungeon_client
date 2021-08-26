@@ -14,7 +14,6 @@ module.exports = class Camera {
 
     //follow() reqires a Point class to follow and updates the cameras position
     follow(a) {
-        console.log(a)
         this.pos.x = a.position.x - this.cameraSize.x / 2;
         this.pos.y = a.position.y - this.cameraSize.y / 2;
         if (this.pos.x < 0) {
@@ -90,7 +89,9 @@ module.exports = class Basegame { // Abstract class
         }
     }
 
-    init() {        
+    init() {
+        Gamestate.absoluteTime = 0;
+        
         Gamestate.canvas = document.getElementById("canvas-id");
 
         Gamestate.canvas.width = 800;
@@ -110,10 +111,16 @@ module.exports = class Basegame { // Abstract class
         window.addEventListener("mousemove", this);
 
         this.redraw();
-        setInterval(this.update.bind(this), 10);
+        setInterval(this.updateStart.bind(this), 10);
     }
 
     draw() {}
+    updateStart() {
+        let timestamp = performance.now();
+        this.update();
+        Gamestate.deltaTime = performance.now() - timestamp;
+        Gamestate.absoluteTime += performance.now() - timestamp;
+    }
     update() {}
     keyup(key) {}
     keydown(key) {}
@@ -127,13 +134,15 @@ module.exports = class Basegame { // Abstract class
 /***/ 147:
 /***/ ((module) => {
 
-let canvas, context, mousePosition, isKeyPressed, isMouseDown;
+let canvas, context, mousePosition, isKeyPressed, isMouseDown, deltaTime, absoluteTime;
 module.exports = {
     canvas,
     context,
     mousePosition,
     isKeyPressed,
-    isMouseDown
+    isMouseDown,
+    deltaTime,
+    absoluteTime
 };
 
 /***/ }),
@@ -208,7 +217,8 @@ module.exports = class Inventory {
         this.ammo = [];
     }
 
-    draw() {
+    draw(camera) {
+        let cam = camera
         const w = Gamestate.canvas.width,
             h = Gamestate.canvas.height;
         const slotSize = w / 16;
@@ -219,7 +229,8 @@ module.exports = class Inventory {
 
         for (let i = 0; i < this.maxSize; i++) {
             if (!this.content[i].empty) {
-                this.content[i].item.draw();
+                console.log("Inventory cam :", camera)
+                this.content[i].item.draw(cam);
                 Gamestate.context.drawImage(this.content[i].item.sprite, w / 2 - this.maxSize * slotSize / 2 + i * slotSize, h - slotSize, slotSize, slotSize);
             }
         }
@@ -317,6 +328,7 @@ const Weapons = __webpack_require__(45);
 const Utility = __webpack_require__(580);
 const Geometry = __webpack_require__(322);
 const Point = Geometry.Point;
+const Maze = __webpack_require__(864);
 
 module.exports = class Player {
     constructor(position, health, inventory, id) {
@@ -369,16 +381,23 @@ module.exports = class Player {
 
         if (Gamestate.isKeyPressed[65]) {
             // All collision detections done before movement to prevent getting stuck 
-            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) - this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point((this.position.x - this.size.x / 2) - this.delta,
+                        this.position.y - this.size.y / 2),
+                    this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "left"
-                this.position.x -= this.delta
+                this.position.x -= this.delta /* / Gamestate.deltaTime */ ;
                 movx = true
                 this.delta += 0.1
             }
         } else if (Gamestate.isKeyPressed[68]) {
-            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) + this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point((this.position.x - this.size.x / 2) + this.delta,
+                        this.position.y - this.size.y / 2),
+                    this.size.x, this.size.y, Maze.walls)) {
+
                 this.dir = "right"
-                this.position.x += this.delta
+                this.position.x += this.delta /* / Gamestate.deltaTime */ ;
                 movx = true
                 this.delta += 0.1
             }
@@ -387,16 +406,22 @@ module.exports = class Player {
         }
 
         if (Gamestate.isKeyPressed[87]) {
-            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) - this.delta), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point(this.position.x - this.size.x / 2,
+                        (this.position.y - this.size.y / 2) - this.delta),
+                    this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "up"
-                this.position.y -= this.delta
+                this.position.y -= this.delta /* / Gamestate.deltaTime */ ;
                 movy = true
                 this.delta += 0.1
             }
         } else if (Gamestate.isKeyPressed[83]) {
-            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) + this.delta), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point(this.position.x - this.size.x / 2,
+                        (this.position.y - this.size.y / 2) + this.delta),
+                    this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "down"
-                this.position.y += this.delta
+                this.position.y += this.delta /* / Gamestate.deltaTime */ ;
                 movy = true
                 this.delta += 0.1
             }
@@ -460,7 +485,8 @@ module.exports = class Player {
         Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-        this.inventory.draw();
+        console.log("Player cam : ", camera)
+        this.inventory.draw(camera);
     }
 
     startUsing() {
@@ -547,6 +573,25 @@ module.exports = {
     Rectangle: Rectangle,
     Circle: Circle
 };
+
+/***/ }),
+
+/***/ 864:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+﻿const Geometry = __webpack_require__(322);
+const Point = Geometry.Point;
+const Line = Geometry.Line;
+
+let MazeRet = {walls : []};
+MazeRet.walls.push(new Line(new Point(0, 0), new Point(800, 0)));
+MazeRet.walls.push(new Line(new Point(800, 0), new Point(800, 600)));
+MazeRet.walls.push(new Line(new Point(0, 600), new Point(800, 600)));
+MazeRet.walls.push(new Line(new Point(0, 0), new Point(0, 600)));
+MazeRet.walls.push(new Line(new Point(300, 100), new Point(300, 300)));
+
+module.exports = MazeRet;
+
 
 /***/ }),
 
@@ -715,13 +760,15 @@ class BasicBullet extends Projectile {
         this.radius = radius;
     }
     update() {
-        this.position.x += this.delta.x;
-        this.position.y += this.delta.y;
+        this.position.x += this.delta.x /* / Gamestate.deltaTime * 2 */ ;
+        this.position.y += this.delta.y /* / Gamestate.deltaTime * 2 */ ;
     }
     draw(camera) {
+        console.log("Bullet cam : ", camera)
         Gamestate.context.beginPath();
-        Gamestate.context.fillStyle = "blue";
-        Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.fillStyle = "#442442";
+        let newpos = camera.calculate_pos(this.position)
+        Gamestate.context.arc(newpos.x, newpos.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
     }
     calculateDamage() {
@@ -861,193 +908,176 @@ const Player = __webpack_require__(94);
 const Point = Geometry.Point;
 const Line = Geometry.Line;
 const Gamestate = __webpack_require__(147);
-
+const Maze = __webpack_require__(864);
 class Weapons { // TODO: Abstract class
-	constructor(owner, reloadRate) {
-		this.bullets = [];
-		this.owner = owner;
-		this.cooldown = 0;
-		this.reloadRate = reloadRate;
-		this.alreadyShot = true;
-	}
-		
-	startUsing() {}
-	stopUsing() {}
+    constructor(owner, reloadRate, ammo) {
+        this.bullets = [];
+        this.owner = owner;
+        this.cooldown = 0;
+        this.reloadRate = reloadRate;
+        this.alreadyShot = true;
+        this.ammo = ammo;
+        this.maxAmmo = ammo;
+    }
 
-	equip(newOwner) {this.owner = owner;}
-	unequip() {}
+    startUsing() {
+        this.alreadyShot = false;
+    }
 
-	update() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}		
-	}
+    stopUsing() {
+        this.alreadyShot = true;
+    }
 
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
-	}
+    equip(newOwner) { this.owner = newOwner; }
+    unequip() {}
+
+    update() {
+        for (let i in this.bullets) {
+            this.bullets[i].update();
+            if (Utility.boxWallsColliding(this.bullets[i].position, 10, 10, Maze.walls)) {
+                this.bullets[i] = this.bullets[this.bullets.length - 1];
+                this.bullets.pop();
+                --i;
+            }
+        }
+        this.cooldown--;
+        if (Gamestate.isKeyPressed[32]) {
+            this.cooldown = 500;
+            this.ammo = this.maxAmmo;
+        }
+        if (this.cooldown > 0) return;
+        this.inferiorUpdate();
+
+    }
+
+    draw(camera) {
+        console.log("Weapon cam : ", camera)
+        for (let i of this.bullets) {
+            i.draw(camera);
+            console.log(i);
+        }
+    }
 }
 
-class BasicGun extends Weapons{
+class BasicGun extends Weapons {
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-	constructor(owner,reloadRate) {
-		super(owner, reloadRate);
-		this.sprite = new Image();
-		this.sprite.src = '../production/images/pistol.png';
+    constructor(owner, reloadRate, ammo) {
+        super(owner, reloadRate, ammo);
+        this.sprite = new Image();
+        this.sprite.src = '../production/images/pistol.png';
 
-	}
+    }
 
-	startUsing() {
-		this.alreadyShot = false;
-	}
-	stopUsing() {}
+    stopUsing() {}
 
-	update() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}	
-		this.cooldown--;
-
-		if(this.cooldown > 0) {return;}
-
-		if(!this.alreadyShot) {
-			let shotFrom = this.owner.position;
-			let shotTo = Gamestate.mousePosition;
-			let dist = Utility.distance(shotFrom, shotTo);
-			let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
-			let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-			this.bullets.push(new Bullets.BasicBullet(
-			new Point(shotFrom.x, shotFrom.y), 
-			new Point(deltaX, deltaY), 69));
-			this.cooldown = this.reloadRate;
-			this.alreadyShot = true;
-		}
-	}
-
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
-	}
+    inferiorUpdate() {
+        //	console.log(this.ammo);
+        if (this.ammo > 0) {
+            if (!this.alreadyShot) {
+                let shotFrom = this.owner.position;
+                let shotTo = Gamestate.mousePosition;
+                let dist = Utility.distance(shotFrom, shotTo);
+                let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
+                let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
+                this.bullets.push(new Bullets.BasicBullet(
+                    new Point(shotFrom.x, shotFrom.y),
+                    new Point(deltaX, deltaY), 69));
+                this.cooldown = this.reloadRate;
+                this.alreadyShot = true;
+                this.ammo--;
+            }
+        }
+    }
 }
 
 
-class AK47 extends Weapons{
+class AK47 extends Weapons {
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-	constructor(owner,reloadRate) {
-		super(owner, reloadRate);
-		this.sprite = new Image();
-		this.sprite.src = '../production/images/assaultRifle.png';
-	}
+    constructor(owner, reloadRate, ammo) {
+        super(owner, reloadRate, ammo);
+        this.sprite = new Image();
+        this.sprite.src = '../production/images/assaultRifle.png';
+    }
+    inferiorUpdate() {
+        if (Gamestate.isKeyPressed[32]) {
+            this.cooldown = 600;
+            this.ammo = 60;
+        }
+        if (this.ammo > 0) {
+            if (!this.alreadyShot) {
+                let shotFrom = this.owner.position;
+                let shotTo = Gamestate.mousePosition;
+                if (this.alreadyShot == false) {
+                    let dist = Utility.distance(shotFrom, shotTo);
+                    let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
+                    let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
+                    this.bullets.push(new Bullets.BasicBullet(
+                        new Point(shotFrom.x, shotFrom.y),
+                        new Point(deltaX, deltaY), 69));
+                    this.cooldown = this.reloadRate;
+                    this.ammo--;
+                }
+            }
+        }
+        //	console.log(this.ammo);
+    }
 
-	startUsing() {
-		this.alreadyShot = false;
-	}
-	stopUsing() {
-		this.alreadyShot=true; 
-	}
-	update() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}	
-
-		this.cooldown --;
-		if(this.cooldown > 0) {return;}
-
-		if(!this.alreadyShot) {
-			let shotFrom = this.owner.position;
-			let shotTo = Gamestate.mousePosition;
-			if(this.alreadyShot==false){
-				let dist = Utility.distance(shotFrom, shotTo);
-				let deltaX = (shotTo.x - shotFrom.x) / dist * 5;
-				let deltaY = (shotTo.y - shotFrom.y) / dist * 5;
-				this.bullets.push(new Bullets.BasicBullet(
-				new Point(shotFrom.x, shotFrom.y), 
-				new Point(deltaX, deltaY), 69));
-				this.cooldown = this.reloadRate;
-			}
-		}
-	
-	} 
-
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
-	}
 }
-class Shotgun extends Weapons{
+class Shotgun extends Weapons {
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-	constructor(owner,reloadRate) {
-		super(owner, reloadRate);
-		this.sprite = new Image();
-		this.sprite.src = '../production/images/shotgun.png';
-	}
-
-	startUsing() {
-		this.alreadyShot = false;
-	}
-	stopUsing() {
-		this.alreadyShot=true; 
-	}
-	update() { 	
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].update();
-		}
-
-		this.cooldown--;	
-
-		if(this.cooldown > 0) {return;}
-
-		if(!this.alreadyShot) {
-			let shotFrom = this.owner.position;
-			let shotTo = Gamestate.mousePosition;			
-			let dist = Utility.distance(shotFrom, shotTo);
-			let speed = []
-			for(let i = 0; i < 7; i++){
-				speed[i] = Math.random()*3+3;
-			}
-			let deltaX = (shotTo.x - shotFrom.x) / dist * speed[1];
-			let deltaY = (shotTo.y - shotFrom.y) / dist * speed[1];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[2];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[2];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.15, deltaY+0.15), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[3];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[3];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.15, deltaY-0.15), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[4];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[4];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.30, deltaY+0.30), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[5];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[5];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.30, deltaY-0.30), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[6];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[6];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX-0.45, deltaY-0.45), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
-			this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX+0.45, deltaY+0.45), 69));
-			deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
-			deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
-
-			this.cooldown = this.reloadRate;
-		}		
-	}
-
-	draw() {
-		for(let i = 0; i < this.bullets.length; i ++) {
-			this.bullets[i].draw();
-		}
-	}
+    constructor(owner, reloadRate, ammo) {
+        super(owner, reloadRate, ammo);
+        this.sprite = new Image();
+        this.sprite.src = '../production/images/shotgun.png';
+    }
+    inferiorUpdate() {
+        if (Gamestate.isKeyPressed[32]) {
+            this.cooldown = 700;
+            this.ammo = 8;
+        }
+        if (this.ammo > 0) {
+            if (!this.alreadyShot) {
+                let shotFrom = this.owner.position;
+                let shotTo = Gamestate.mousePosition;
+                let dist = Utility.distance(shotFrom, shotTo);
+                let speed = []
+                for (let i = 0; i < 7; i++) {
+                    speed[i] = Math.random() * 3 + 3;
+                }
+                let deltaX = (shotTo.x - shotFrom.x) / dist * speed[1];
+                let deltaY = (shotTo.y - shotFrom.y) / dist * speed[1];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX, deltaY), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[2];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[2];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX + 0.15, deltaY + 0.15), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[3];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[3];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX - 0.15, deltaY - 0.15), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[4];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[4];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX + 0.30, deltaY + 0.30), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[5];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[5];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX - 0.30, deltaY - 0.30), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[6];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[6];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX - 0.45, deltaY - 0.45), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
+                this.bullets.push(new Bullets.BasicBullet(new Point(shotFrom.x, shotFrom.y), new Point(deltaX + 0.45, deltaY + 0.45), 69));
+                deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
+                deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
+                this.ammo--;
+                this.cooldown = this.reloadRate;
+            }
+        }
+    }
 }
 module.exports = {
-	Weapons: Weapons,
-	BasicGun: BasicGun,
-	AK47: AK47,
-	Shotgun: Shotgun
+    Weapons: Weapons,
+    BasicGun: BasicGun,
+    AK47: AK47,
+    Shotgun: Shotgun
 };
 
 /***/ })
@@ -1092,28 +1122,19 @@ const Geometry = __webpack_require__(322);
 const Point = Geometry.Point;
 const Line = Geometry.Line;
 const Weapons = __webpack_require__(45);
+const Maze = __webpack_require__(864);
 
 class Game extends Basegame {
     constructor() {
         super();
 
-        this.walls = [];
         this.intersections = [];
 
-        this.walls.push(new Line(new Point(0, 0), new Point(800, 0)));
-        this.walls.push(new Line(new Point(800, 0), new Point(800, 600)));
-        this.walls.push(new Line(new Point(0, 600), new Point(800, 600)));
-        this.walls.push(new Line(new Point(0, 0), new Point(0, 600)));
-        this.walls.push(new Line(new Point(300, 100), new Point(300, 300)));
-
         this.player = new Player(new Point(100, 100), 100, new Inventory(10), 0);
-
-        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70));
-        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30));
-        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150));
-
-        this.lighting = new Lighting(this.walls);
-
+        this.player.inventory.equipItem(new Weapons.BasicGun(this.player, 70, 20));
+        this.player.inventory.equipItem(new Weapons.AK47(this.player, 30, 60));
+        this.player.inventory.equipItem(new Weapons.Shotgun(this.player, 150, 8));
+        this.lighting = new Lighting(Maze.walls);
         this.camera = new Camera(new Point(800, 600), new Point(800, 600))
     }
 
@@ -1121,7 +1142,6 @@ class Game extends Basegame {
         this.camera.follow(this.player)
         this.intersections = this.lighting.getIntersections(this.player.position);
         this.player.update(this.walls);
-        this.player.inventory.update();
     }
 
     draw() {
@@ -1140,13 +1160,11 @@ class Game extends Basegame {
 
         Gamestate.context.strokeStyle = "red"
         Gamestate.context.lineWidth = 1;
-        for (let i = 0; i < this.walls.length; i++) {
-            this.walls[i].draw(this.camera);
-        }
-
+        console.log(this.camera);
         this.player.draw(this.camera);
-        this.player.inventory.draw();
-
+        for (let i = 0; i < Maze.walls.length; i++) {
+            Maze.walls[i].draw(this.camera);
+        }
     }
 
     mousedown() {

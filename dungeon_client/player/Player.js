@@ -4,6 +4,7 @@ const Weapons = require('/weapons/Weapon.js');
 const Utility = require('/utilities/Utility.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
+const Maze = require('/utilities/Maze.js');
 
 module.exports = class Player {
     constructor(position, health, inventory, id) {
@@ -56,16 +57,23 @@ module.exports = class Player {
 
         if (Gamestate.isKeyPressed[65]) {
             // All collision detections done before movement to prevent getting stuck 
-            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) - this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point((this.position.x - this.size.x / 2) - this.delta,
+                        this.position.y - this.size.y / 2),
+                    this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "left"
-                this.position.x -= this.delta
+                this.position.x -= this.delta /* / Gamestate.deltaTime */ ;
                 movx = true
                 this.delta += 0.1
             }
         } else if (Gamestate.isKeyPressed[68]) {
-            if (!Utility.boxWallsColliding(new Point((this.position.x - this.size.x / 2) + this.delta, this.position.y - this.size.y / 2), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point((this.position.x - this.size.x / 2) + this.delta,
+                        this.position.y - this.size.y / 2),
+                    this.size.x, this.size.y, Maze.walls)) {
+
                 this.dir = "right"
-                this.position.x += this.delta
+                this.position.x += this.delta /* / Gamestate.deltaTime */ ;
                 movx = true
                 this.delta += 0.1
             }
@@ -74,16 +82,22 @@ module.exports = class Player {
         }
 
         if (Gamestate.isKeyPressed[87]) {
-            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) - this.delta), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point(this.position.x - this.size.x / 2,
+                        (this.position.y - this.size.y / 2) - this.delta),
+                    this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "up"
-                this.position.y -= this.delta
+                this.position.y -= this.delta /* / Gamestate.deltaTime */ ;
                 movy = true
                 this.delta += 0.1
             }
         } else if (Gamestate.isKeyPressed[83]) {
-            if (!Utility.boxWallsColliding(new Point(this.position.x - this.size.x / 2, (this.position.y - this.size.y / 2) + this.delta), this.size.x, this.size.y, walls)) {
+            if (!Utility.boxWallsColliding(
+                    new Point(this.position.x - this.size.x / 2,
+                        (this.position.y - this.size.y / 2) + this.delta),
+                    this.size.x, this.size.y, Maze.walls)) {
                 this.dir = "down"
-                this.position.y += this.delta
+                this.position.y += this.delta /* / Gamestate.deltaTime */ ;
                 movy = true
                 this.delta += 0.1
             }
@@ -147,7 +161,8 @@ module.exports = class Player {
         Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-        this.inventory.draw();
+        console.log("Player cam : ", camera)
+        this.inventory.draw(camera);
     }
 
     startUsing() {

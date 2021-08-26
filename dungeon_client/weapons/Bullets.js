@@ -22,13 +22,15 @@ class BasicBullet extends Projectile {
         this.radius = radius;
     }
     update() {
-        this.position.x += this.delta.x;
-        this.position.y += this.delta.y;
+        this.position.x += this.delta.x /* / Gamestate.deltaTime * 2 */ ;
+        this.position.y += this.delta.y /* / Gamestate.deltaTime * 2 */ ;
     }
     draw(camera) {
+        console.log("Bullet cam : ", camera)
         Gamestate.context.beginPath();
-        Gamestate.context.fillStyle = "blue";
-        Gamestate.context.arc(this.position.x, this.position.y, this.radius, 2 * Math.PI, 0);
+        Gamestate.context.fillStyle = "#442442";
+        let newpos = camera.calculate_pos(this.position)
+        Gamestate.context.arc(newpos.x, newpos.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();
     }
     calculateDamage() {
