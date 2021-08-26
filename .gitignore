@@ -1,2 +1,3 @@
+package-lock.json
 node_modules/*
 dungeon_client/production/main.js
