@@ -30,7 +30,11 @@ class Weapons { // TODO: Abstract class
     equip(newOwner) { this.owner = newOwner; }
     unequip() {}
 
-    update(camera) {
+    update(camera = {
+        calculate_pos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         for (let i in this.bullets) {
             this.bullets[i].update();
             if (Utility.boxWallsColliding(this.bullets[i].position, 10, 10, Maze.walls)) {
@@ -49,7 +53,11 @@ class Weapons { // TODO: Abstract class
 
     }
 
-    draw(camera) {
+    draw(camera = {
+            calculate_pos: () => {
+                return { x: 0, y: 0 }
+            }
+        }) {
             for (let i of this.bullets) {
                 i.draw(camera);
             }
@@ -60,7 +68,7 @@ class Weapons { // TODO: Abstract class
          */
     drawImg(position, size, camera) {
         if (this.owner) {
-			let drawpos = camera.calculate_pos(this.owner.position);
+            let drawpos = camera.calculate_pos(this.owner.position);
             Gamestate.context.save();
             Gamestate.context.translate(drawpos.x, drawpos.y);
             Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - drawpos.y, Gamestate.mousePosition.x - drawpos.x));
@@ -87,8 +95,8 @@ class BasicGun extends Weapons {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
                 let shotTo = Gamestate.mousePosition;
-				shotTo.x += camera.pos.x;
-				shotTo.y += camera.pos.y;
+                shotTo.x += camera.pos.x;
+                shotTo.y += camera.pos.y;
                 let dist = Utility.distance(shotFrom, shotTo);
                 let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
                 let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
@@ -120,8 +128,8 @@ class AK47 extends Weapons {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
                 let shotTo = Gamestate.mousePosition;
-				shotTo.x += camera.pos.x;
-				shotTo.y += camera.pos.y;
+                shotTo.x += camera.pos.x;
+                shotTo.y += camera.pos.y;
                 if (this.alreadyShot == false) {
                     let dist = Utility.distance(shotFrom, shotTo);
                     let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
@@ -132,8 +140,8 @@ class AK47 extends Weapons {
                     this.cooldown = this.reloadRate;
                     this.ammo--;
                 }
-				shotTo.x -= camera.pos.x;
-				shotTo.y -= camera.pos.y;
+                shotTo.x -= camera.pos.x;
+                shotTo.y -= camera.pos.y;
             }
         }
         //	console.log(this.ammo);
@@ -156,8 +164,8 @@ class Shotgun extends Weapons {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
                 let shotTo = Gamestate.mousePosition;
-				shotTo.x += camera.pos.x;
-				shotTo.y += camera.pos.y;
+                shotTo.x += camera.pos.x;
+                shotTo.y += camera.pos.y;
                 let dist = Utility.distance(shotFrom, shotTo);
                 let speed = []
                 for (let i = 0; i < 7; i++) {
@@ -188,8 +196,8 @@ class Shotgun extends Weapons {
                 deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
                 this.ammo--;
                 this.cooldown = this.reloadRate;
-				shotTo.x -= camera.pos.x;
-				shotTo.y -= camera.pos.y;
+                shotTo.x -= camera.pos.x;
+                shotTo.y -= camera.pos.y;
             }
         }
     }

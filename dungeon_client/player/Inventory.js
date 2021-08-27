@@ -13,7 +13,11 @@ module.exports = class Inventory {
         this.ammo = [];
     }
 
-    draw(camera) {
+    draw(camera = {
+        calculate_pos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         let cam = camera
         const w = Gamestate.canvas.width,
             h = Gamestate.canvas.height;
@@ -47,7 +51,11 @@ module.exports = class Inventory {
         }
     }
 
-    update(camera) {
+    update(camera = {
+        calculate_pos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
                 if (this.getSelected()) this.getSelected().stopUsing();

@@ -51,7 +51,7 @@ module.exports = class Player {
 
         this.itr = 0;
     }
-    update(walls , camera) {
+    update(walls, camera) {
         let movx = false,
             movy = false
 
@@ -130,7 +130,11 @@ module.exports = class Player {
 
         this.inventory.update(camera);
     }
-    draw(camera) {
+    draw(camera = {
+        calculate_pos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
         let curdrawpos = camera.calculate_pos(this.position)

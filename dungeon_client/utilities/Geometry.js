@@ -23,7 +23,11 @@ class Line {
             this.recalculate();
         }
         // Draws the line(if needed)
-    draw(camera) {
+    draw(camera = {
+        calculate_pos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         Gamestate.context.beginPath();
         let begin = camera.calculate_pos(this.begin)
         let end = camera.calculate_pos(this.end)
