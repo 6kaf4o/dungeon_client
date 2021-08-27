@@ -1,4 +1,4 @@
-class Client{
+module.exports = class Client{
     constructor(){
         this.socket = io();
         this.allPlayers = [];
@@ -42,5 +42,3 @@ class Client{
         this.allPlayers = this.allPlayers.filter(p => p.id != socket.id);
     }
 }
-
-module.exports = new Client();

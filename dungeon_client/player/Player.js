@@ -6,6 +6,7 @@ const Utility = require('/utilities/Utility.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
 const Maze = require('/utilities/Maze.js');
+const { context } = require('../framework/State');
 
 module.exports = class Player {
     constructor(position, health, inventory, id) {
@@ -158,11 +159,20 @@ module.exports = class Player {
         }
         // Gamestate.context.fillStyle = 'blue';
         // Gamestate.context.fillRect(this.position.x - this.size.x / 2, this.position.y - this.size.y / 2, this.size.x, this.size.y);
-        let healthBarSize = this.size.x * this.maxHealth / 50;
+        let barSize = this.size.x * this.maxHealth / 50;
         Gamestate.context.fillStyle = 'red';
-        Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize, this.size.y / 20);
+        Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, barSize, this.size.y / 20);
         Gamestate.context.fillStyle = 'green';
-        Gamestate.context.fillRect(curdrawpos.x - healthBarSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, healthBarSize / this.maxHealth * this.health, this.size.y / 20);
+        Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, barSize / this.maxHealth * this.health, this.size.y / 20);
+        
+        if (this.inventory.getSelected().reloading){
+            let reloadTime = this.inventory.getSelected().reloadTime, cooldown = this.inventory.getSelected().cooldown;
+            if (cooldown < 0) cooldown = 0;
+            Gamestate.context.fillStyle = '#762700';
+            Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10 * 2, barSize, this.size.y / 20);
+            Gamestate.context.fillStyle = '#FACC69';
+            Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10 * 2, barSize / reloadTime * cooldown, this.size.y / 20);
+        }
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
         this.inventory.draw(camera);

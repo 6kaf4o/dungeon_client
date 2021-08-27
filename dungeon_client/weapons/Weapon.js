@@ -10,14 +10,16 @@ const Gamestate = require('/framework/State.js');
 const Maze = require('/utilities/Maze.js');
 const { context, mousePosition } = require('../framework/State');
 class Weapons { // TODO: Abstract class
-    constructor(owner, reloadRate, ammo) {
+    constructor(owner, fireRate, ammo) {
         this.bullets = [];
         this.owner = owner;
         this.cooldown = 0;
-        this.reloadRate = reloadRate;
+        this.fireRate = fireRate;
         this.alreadyShot = true;
         this.ammo = ammo;
         this.maxAmmo = ammo;
+        this.reloadTime = 500;
+        this.reloading = false;
     }
 
     startUsing() {
@@ -42,10 +44,12 @@ class Weapons { // TODO: Abstract class
         }
         this.cooldown--;
         if (Gamestate.isKeyPressed[32]) {
-            this.cooldown = 500;
+            this.reloading = true;
+            this.cooldown = this.reloadTime;
             this.ammo = this.maxAmmo;
-        }
+        } 
         if (this.cooldown > 0) return;
+        this.reloading = false;
         this.inferiorUpdate(camera);
 
     }
@@ -73,11 +77,11 @@ class Weapons { // TODO: Abstract class
 
 class BasicGun extends Weapons {
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-    constructor(owner, reloadRate, ammo) {
-        super(owner, reloadRate, ammo);
+    constructor(owner, fireRate, ammo) {
+        super(owner, fireRate, ammo);
         this.sprite = new Image();
         this.sprite.src = '../production/images/pistol.png';
-
+        this.reloadTime = 500;
     }
 
     stopUsing() {}
@@ -96,11 +100,9 @@ class BasicGun extends Weapons {
                 this.bullets.push(new Bullets.BasicBullet(
                     new Point(shotFrom.x, shotFrom.y),
                     new Point(deltaX, deltaY), 69));
-                this.cooldown = this.reloadRate;
+                this.cooldown = this.fireRate;
                 this.alreadyShot = true;
                 this.ammo--;
-                shotTo.x -= camera.pos.x;
-                shotTo.y -= camera.pos.y;
             }
         }
     }
@@ -109,16 +111,13 @@ class BasicGun extends Weapons {
 
 class AK47 extends Weapons {
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-    constructor(owner, reloadRate, ammo) {
-        super(owner, reloadRate, ammo);
+    constructor(owner, fireRate, ammo) {
+        super(owner, fireRate, ammo);
         this.sprite = new Image();
         this.sprite.src = '../production/images/assaultRifle.png';
+        this.reloadTime = 600;
     }
     inferiorUpdate(camera = new Camera()) {
-        if (Gamestate.isKeyPressed[32]) {
-            this.cooldown = 600;
-            this.ammo = 60;
-        }
         if (this.ammo > 0) {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
@@ -132,7 +131,7 @@ class AK47 extends Weapons {
                     this.bullets.push(new Bullets.BasicBullet(
                         new Point(shotFrom.x, shotFrom.y),
                         new Point(deltaX, deltaY), 69));
-                    this.cooldown = this.reloadRate;
+                    this.cooldown = this.fireRate;
                     this.ammo--;
                 }
                 shotTo.x -= camera.pos.x;
@@ -145,16 +144,13 @@ class AK47 extends Weapons {
 }
 class Shotgun extends Weapons {
     //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
-    constructor(owner, reloadRate, ammo) {
-        super(owner, reloadRate, ammo);
+    constructor(owner, fireRate, ammo) {
+        super(owner, fireRate, ammo);
         this.sprite = new Image();
         this.sprite.src = '../production/images/shotgun.png';
+        this.reloadTime = 700;
     }
     inferiorUpdate(camera = new Camera()) {
-        if (Gamestate.isKeyPressed[32]) {
-            this.cooldown = 700;
-            this.ammo = 8;
-        }
         if (this.ammo > 0) {
             if (!this.alreadyShot) {
                 let shotFrom = this.owner.position;
@@ -190,7 +186,7 @@ class Shotgun extends Weapons {
                 deltaX = (shotTo.x - shotFrom.x) / dist * speed[0];
                 deltaY = (shotTo.y - shotFrom.y) / dist * speed[0];
                 this.ammo--;
-                this.cooldown = this.reloadRate;
+                this.cooldown = this.fireRate;
                 shotTo.x -= camera.pos.x;
                 shotTo.y -= camera.pos.y;
             }
