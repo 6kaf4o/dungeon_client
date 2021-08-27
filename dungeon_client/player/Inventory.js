@@ -1,5 +1,6 @@
 const Gamestate = require('../framework/State.js');
 const InventoryItems = require('/player/InventoryItems.js');
+const Size = require('/utilities/Geometry.js').Size;
 
 module.exports = class Inventory {
     constructor(maxSize) {
@@ -31,7 +32,7 @@ module.exports = class Inventory {
         }
 
         // Draw selected item
-        this.getSelected().drawImg(this.players[0].position, new Size(100, 100) , this.camera);
+        this.getSelected().drawImg(this.getSelected().owner.position, new Size(100, 100) , camera);
 
         Gamestate.context.globalAlpha = 0.5;
         Gamestate.context.fillStyle = 'black';
