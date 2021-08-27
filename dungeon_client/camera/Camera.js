@@ -25,7 +25,7 @@ module.exports = class Camera {
     }
 
     // calculates a point's draw position according to the cameras location
-    calculate_pos(pos) {
+    calculatePos(pos) {
         let returnpos = { x: pos.x, y: pos.y }
         returnpos.x -= this.pos.x
         returnpos.y -= this.pos.y

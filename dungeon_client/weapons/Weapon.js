@@ -31,7 +31,7 @@ class Weapons { // TODO: Abstract class
     unequip() {}
 
     update(camera = {
-        calculate_pos: () => {
+        calculatePos: () => {
             return { x: 0, y: 0 }
         }
     }) {
@@ -54,7 +54,7 @@ class Weapons { // TODO: Abstract class
     }
 
     draw(camera = {
-            calculate_pos: () => {
+            calculatePos: () => {
                 return { x: 0, y: 0 }
             }
         }) {
@@ -66,9 +66,13 @@ class Weapons { // TODO: Abstract class
          * @param {Point} position 
          * @param {Size} size 
          */
-    drawImg(position, size, camera) {
+    drawImg(position, size, camera = {
+        calculatePos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         if (this.owner) {
-            let drawpos = camera.calculate_pos(this.owner.position);
+            let drawpos = camera.calculatePos(this.owner.position);
             Gamestate.context.save();
             Gamestate.context.translate(drawpos.x, drawpos.y);
             Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - drawpos.y, Gamestate.mousePosition.x - drawpos.x));
@@ -89,7 +93,11 @@ class BasicGun extends Weapons {
 
     stopUsing() {}
 
-    inferiorUpdate(camera) {
+    inferiorUpdate(camera = {
+        calculatePos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         //	console.log(this.ammo);
         if (this.ammo > 0) {
             if (!this.alreadyShot) {
@@ -119,7 +127,11 @@ class AK47 extends Weapons {
         this.sprite = new Image();
         this.sprite.src = '../production/images/assaultRifle.png';
     }
-    inferiorUpdate(camera) {
+    inferiorUpdate(camera = {
+        calculatePos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         if (Gamestate.isKeyPressed[32]) {
             this.cooldown = 600;
             this.ammo = 60;
@@ -155,7 +167,11 @@ class Shotgun extends Weapons {
         this.sprite = new Image();
         this.sprite.src = '../production/images/shotgun.png';
     }
-    inferiorUpdate(camera) {
+    inferiorUpdate(camera = {
+        calculatePos: () => {
+            return { x: 0, y: 0 }
+        }
+    }) {
         if (Gamestate.isKeyPressed[32]) {
             this.cooldown = 700;
             this.ammo = 8;

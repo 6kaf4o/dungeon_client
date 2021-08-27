@@ -14,7 +14,7 @@ module.exports = class Inventory {
     }
 
     draw(camera = {
-        calculate_pos: () => {
+        calculatePos: () => {
             return { x: 0, y: 0 }
         }
     }) {
@@ -52,7 +52,7 @@ module.exports = class Inventory {
     }
 
     update(camera = {
-        calculate_pos: () => {
+        calculatePos: () => {
             return { x: 0, y: 0 }
         }
     }) {

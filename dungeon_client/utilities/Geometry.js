@@ -24,13 +24,13 @@ class Line {
         }
         // Draws the line(if needed)
     draw(camera = {
-        calculate_pos: () => {
+        calculatePos: () => {
             return { x: 0, y: 0 }
         }
     }) {
         Gamestate.context.beginPath();
-        let begin = camera.calculate_pos(this.begin)
-        let end = camera.calculate_pos(this.end)
+        let begin = camera.calculatePos(this.begin)
+        let end = camera.calculatePos(this.end)
         Gamestate.context.lineTo(begin.x, begin.y);
         Gamestate.context.lineTo(end.x, end.y);
         Gamestate.context.stroke();

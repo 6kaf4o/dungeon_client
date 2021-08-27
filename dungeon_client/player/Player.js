@@ -131,13 +131,13 @@ module.exports = class Player {
         this.inventory.update(camera);
     }
     draw(camera = {
-        calculate_pos: () => {
+        calculatePos: () => {
             return { x: 0, y: 0 }
         }
     }) {
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
-        let curdrawpos = camera.calculate_pos(this.position)
+        let curdrawpos = camera.calculatePos(this.position)
         switch (this.dir) {
             case "up":
                 this.spritesheet.draw(new Point(this.cursprite, this.sprite.up), curdrawpos, this.size.x, this.size.y)
