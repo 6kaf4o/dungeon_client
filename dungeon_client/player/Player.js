@@ -165,13 +165,15 @@ module.exports = class Player {
         Gamestate.context.fillStyle = 'green';
         Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10, barSize / this.maxHealth * this.health, this.size.y / 20);
         
-        if (this.inventory.getSelected().reloading){
-            let reloadTime = this.inventory.getSelected().reloadTime, cooldown = this.inventory.getSelected().cooldown;
-            if (cooldown < 0) cooldown = 0;
-            Gamestate.context.fillStyle = '#762700';
-            Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10 * 2, barSize, this.size.y / 20);
-            Gamestate.context.fillStyle = '#FACC69';
-            Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10 * 2, barSize / reloadTime * cooldown, this.size.y / 20);
+        if (this.inventory.getSelected()){
+            if (this.inventory.getSelected().reloading){
+                let reloadTime = this.inventory.getSelected().reloadTime, cooldown = this.inventory.getSelected().cooldown;
+                if (cooldown < 0) cooldown = 0;
+                Gamestate.context.fillStyle = '#762700';
+                Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10 * 2, barSize, this.size.y / 20);
+                Gamestate.context.fillStyle = '#FACC69';
+                Gamestate.context.fillRect(curdrawpos.x - barSize / 2, curdrawpos.y - this.size.y / 2 - this.size.y / 10 * 2, barSize / reloadTime * cooldown, this.size.y / 20);
+            }
         }
         //--------------------->>> sprite draw <<<----------------------------------------\\
 
