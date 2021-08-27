@@ -52,7 +52,7 @@ module.exports = class Player {
 
         this.itr = 0;
     }
-    update(walls, camera = new Camera()) {
+    update(camera = new Camera()) {
         let movx = false,
             movy = false
 
@@ -107,7 +107,7 @@ module.exports = class Player {
             movy = false
         }
 
-        if ((!movx && !movy) || this.delta > 6) {
+        if ((!movx && !movy) || this.delta > 4) {
             if (this.delta > 0) {
                 this.delta -= 0.05
             }
