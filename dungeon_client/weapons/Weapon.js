@@ -76,7 +76,6 @@ class Weapons { // TODO: Abstract class
 }
 
 class BasicGun extends Weapons {
-    //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
     constructor(owner, fireRate, ammo) {
         super(owner, fireRate, ammo);
         this.sprite = new Image();
@@ -112,7 +111,6 @@ class BasicGun extends Weapons {
 
 
 class AK47 extends Weapons {
-    //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
     constructor(owner, fireRate, ammo) {
         super(owner, fireRate, ammo);
         this.sprite = new Image();
@@ -126,16 +124,14 @@ class AK47 extends Weapons {
                 let shotTo = Gamestate.mousePosition;
                 shotTo.x += camera.pos.x;
                 shotTo.y += camera.pos.y;
-                if (this.alreadyShot == false) {
-                    let dist = Utility.distance(shotFrom, shotTo);
-                    let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
-                    let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
-                    this.bullets.push(new Bullets.BasicBullet(
-                        new Point(shotFrom.x, shotFrom.y),
-                        new Point(deltaX, deltaY), 69));
-                    this.cooldown = this.fireRate;
-                    this.ammo--;
-                }
+                let dist = Utility.distance(shotFrom, shotTo);
+                let deltaX = (shotTo.x - shotFrom.x) / dist * 6;
+                let deltaY = (shotTo.y - shotFrom.y) / dist * 6;
+                this.bullets.push(new Bullets.BasicBullet(
+                    new Point(shotFrom.x, shotFrom.y),
+                    new Point(deltaX, deltaY), 69));
+                this.cooldown = this.fireRate;
+                this.ammo--;
                 shotTo.x -= camera.pos.x;
                 shotTo.y -= camera.pos.y;
             }
@@ -145,7 +141,6 @@ class AK47 extends Weapons {
 
 }
 class Shotgun extends Weapons {
-    //class for basicgun - pistol, which is the first Weapons, that everyone will have when plays;
     constructor(owner, fireRate, ammo) {
         super(owner, fireRate, ammo);
         this.sprite = new Image();
