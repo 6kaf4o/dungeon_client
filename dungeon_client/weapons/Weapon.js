@@ -72,7 +72,7 @@ class Weapons { // TODO: Abstract class
             Gamestate.context.save();
             Gamestate.context.translate(drawpos.x, drawpos.y);
             Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - drawpos.y, Gamestate.mousePosition.x - drawpos.x));
-            Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 2.5, size.width, size.height);
+            Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 3.5, size.width, size.height);
             Gamestate.context.restore();
         } else Gamestate.context.drawImage(this.sprite, position.x, position.y, size.x, size.y);
     }
