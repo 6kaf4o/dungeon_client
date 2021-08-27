@@ -27,7 +27,7 @@ class BasicBullet extends Projectile {
     }
     draw(camera) {
         Gamestate.context.beginPath();
-        Gamestate.context.fillStyle = "#442442";
+        Gamestate.context.fillStyle = "#420420";
         let newpos = camera.calculatePos(this.position)
         Gamestate.context.arc(newpos.x, newpos.y, this.radius, 2 * Math.PI, 0);
         Gamestate.context.fill();

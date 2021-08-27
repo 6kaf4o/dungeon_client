@@ -1,4 +1,5 @@
 const Sheet = require('/utilities/Sheet.js');
+const Camera = require('/camera/Camera.js')
 const Gamestate = require('/framework/State.js');
 const Weapons = require('/weapons/Weapon.js');
 const Utility = require('/utilities/Utility.js');
@@ -51,7 +52,7 @@ module.exports = class Player {
 
         this.itr = 0;
     }
-    update(walls, camera) {
+    update(walls, camera = new Camera()) {
         let movx = false,
             movy = false
 
@@ -127,7 +128,6 @@ module.exports = class Player {
             this.cursprite = 0;
         }
         //--------------------->>> Sprite management <<<----------------------------------------\\
-
         this.inventory.update(camera);
     }
     draw(camera = {

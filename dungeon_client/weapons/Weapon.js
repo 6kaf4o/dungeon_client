@@ -2,6 +2,7 @@ const Bullets = require('/weapons/Bullets.js');
 const Utility = require('/utilities/Utility.js');
 const Geometry = require('/utilities/Geometry.js');
 const Player = require('/player/Player.js');
+const Camera = require('/camera/Camera.js');
 const Point = Geometry.Point;
 const Size = Geometry.Size;
 const Line = Geometry.Line;
@@ -30,11 +31,7 @@ class Weapons { // TODO: Abstract class
     equip(newOwner) { this.owner = newOwner; }
     unequip() {}
 
-    update(camera = {
-        calculatePos: () => {
-            return { x: 0, y: 0 }
-        }
-    }) {
+    update(camera = new Camera()) {
         for (let i in this.bullets) {
             this.bullets[i].update();
             if (Utility.boxWallsColliding(this.bullets[i].position, 10, 10, Maze.walls)) {
@@ -53,11 +50,7 @@ class Weapons { // TODO: Abstract class
 
     }
 
-    draw(camera = {
-            calculatePos: () => {
-                return { x: 0, y: 0 }
-            }
-        }) {
+    draw(camera = new Camera()) {
             for (let i of this.bullets) {
                 i.draw(camera);
             }
@@ -66,11 +59,7 @@ class Weapons { // TODO: Abstract class
          * @param {Point} position 
          * @param {Size} size 
          */
-    drawImg(position, size, camera = {
-        calculatePos: () => {
-            return { x: 0, y: 0 }
-        }
-    }) {
+    drawImg(position, size, camera = new Camera()) {
         if (this.owner) {
             let drawpos = camera.calculatePos(this.owner.position);
             Gamestate.context.save();
@@ -78,7 +67,7 @@ class Weapons { // TODO: Abstract class
             Gamestate.context.rotate(Math.atan2(Gamestate.mousePosition.y - drawpos.y, Gamestate.mousePosition.x - drawpos.x));
             Gamestate.context.drawImage(this.sprite, -size.width / 2.5, -size.height / 3.5, size.width, size.height);
             Gamestate.context.restore();
-        } else Gamestate.context.drawImage(this.sprite, position.x, position.y, size.x, size.y);
+        } else Gamestate.context.drawImage(this.sprite, drawpos.x, drawpos.y, size.x, size.y);
     }
 }
 
@@ -93,11 +82,7 @@ class BasicGun extends Weapons {
 
     stopUsing() {}
 
-    inferiorUpdate(camera = {
-        calculatePos: () => {
-            return { x: 0, y: 0 }
-        }
-    }) {
+    inferiorUpdate(camera = new Camera()) {
         //	console.log(this.ammo);
         if (this.ammo > 0) {
             if (!this.alreadyShot) {
@@ -127,11 +112,7 @@ class AK47 extends Weapons {
         this.sprite = new Image();
         this.sprite.src = '../production/images/assaultRifle.png';
     }
-    inferiorUpdate(camera = {
-        calculatePos: () => {
-            return { x: 0, y: 0 }
-        }
-    }) {
+    inferiorUpdate(camera = new Camera()) {
         if (Gamestate.isKeyPressed[32]) {
             this.cooldown = 600;
             this.ammo = 60;
@@ -167,11 +148,7 @@ class Shotgun extends Weapons {
         this.sprite = new Image();
         this.sprite.src = '../production/images/shotgun.png';
     }
-    inferiorUpdate(camera = {
-        calculatePos: () => {
-            return { x: 0, y: 0 }
-        }
-    }) {
+    inferiorUpdate(camera = new Camera()) {
         if (Gamestate.isKeyPressed[32]) {
             this.cooldown = 700;
             this.ammo = 8;
@@ -223,4 +200,4 @@ module.exports = {
     BasicGun: BasicGun,
     AK47: AK47,
     Shotgun: Shotgun
-};
+}

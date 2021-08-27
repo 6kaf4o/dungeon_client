@@ -1,9 +1,11 @@
 //Camera is not static and you may have multiple cameras
+var Point = require('/utilities/Geometry.js').Point
+
 module.exports = class Camera {
-    constructor(mazeSize, cameraSize) {
+    constructor(mazeSize = new Point(800,600), cameraSize = new Point(800 , 600)) {
         this.mazeSize = mazeSize;
         this.cameraSize = cameraSize;
-        this.pos = { x: 0, y: 0 };
+        this.pos = new Point(0,0);
     }
 
     //follow() reqires a Point class to follow and updates the cameras position
