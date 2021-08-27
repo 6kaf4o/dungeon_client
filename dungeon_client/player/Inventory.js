@@ -32,7 +32,7 @@ module.exports = class Inventory {
         }
 
         // Draw selected item
-        this.getSelected().drawImg(this.getSelected().owner.position, new Size(100, 100) , camera);
+        if (this.getSelected()) this.getSelected().drawImg(this.getSelected().owner.position, new Size(100, 100) , camera);
 
         Gamestate.context.globalAlpha = 0.5;
         Gamestate.context.fillStyle = 'black';
