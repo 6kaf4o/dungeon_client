@@ -54,8 +54,7 @@ class Game extends Basegame {
             Maze.walls[i].draw(this.camera);
         }
         this.players[0].draw(this.camera);
-
-        this.players[0].inventory.getSelected().drawImg(this.players[0].position, new Size(100, 100) , this.camera);
+        
         this.minimap.draw(new Point(600, 0),this.players)
     }
 

@@ -30,6 +30,9 @@ module.exports = class Inventory {
             }
         }
 
+        // Draw selected item
+        this.players[0].inventory.getSelected().drawImg(this.players[0].position, new Size(100, 100) , this.camera);
+
         Gamestate.context.globalAlpha = 0.5;
         Gamestate.context.fillStyle = 'black';
         Gamestate.context.fillRect(w / 2 - this.maxSize * slotSize / 2, h - slotSize, this.maxSize * slotSize, slotSize);
@@ -58,7 +61,7 @@ module.exports = class Inventory {
 
         for (let i = 0; i < this.maxSize; i++) {
             if (!this.content[i].empty) {
-                this.content[i].item.update(camera);
+                    this.content[i].item.update(camera);
             }
         }
     }
