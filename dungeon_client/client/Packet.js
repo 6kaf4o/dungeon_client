@@ -26,7 +26,7 @@ class Packet{
 
     addPacket(packet){
         for(key in Object.keys(packet)){
-            let parent = Object.keys(packet)[key]
+            let parent = Object.keys(packet)[key];
             let value = packet[Object.keys(packet)[key]];
             
             if(this.packet.parent === undefined){
@@ -49,7 +49,7 @@ class Packet{
 
     start(){
         if(this.time === undefined){
-            return Error('You need to call init() first!')
+            return Error('You need to call init() first!');
         }
 
         this.init(this.time).bind(this);
@@ -67,5 +67,5 @@ class Packet{
     }
 }
 
-let packet = new Packet()
+let packet = new Packet();
 module.exports = packet;
