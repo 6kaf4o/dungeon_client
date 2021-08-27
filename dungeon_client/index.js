@@ -25,14 +25,14 @@ class Game extends Basegame {
         this.players[0].inventory.equipItem(new Weapons.Shotgun(this.players[0], 150,8));
         this.lighting = new Lighting(Maze.walls);
         this.camera = new Camera(new Point(800, 600), new Point(800, 600))
-        this.minimap = new Minimap(new Size(800, 600), new Size(this.camera.cameraSize.x, this.camera.cameraSize.y), new Size(200, 200))
-        console.log(this.minimap)
+        this.minimap = new Minimap(new Size(800, 600), this.camera, new Size(200, 200))
     }
 
     update() {
         this.camera.follow(this.players[0])
         this.intersections = this.lighting.getIntersections(this.players[0].position);
         this.players[0].update(this.camera);
+        this.minimap.updatePlayers(this.players);
     }
 
     draw() {
@@ -55,7 +55,7 @@ class Game extends Basegame {
         }
         this.players[0].draw(this.camera);
         
-        this.minimap.draw(new Point(600, 0),this.players)
+        this.minimap.draw(new Point(600, 0));
     }
 
     mousedown() {

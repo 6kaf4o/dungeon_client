@@ -6,7 +6,6 @@ const Utility = require('/utilities/Utility.js');
 const Geometry = require('/utilities/Geometry.js');
 const Point = Geometry.Point;
 const Maze = require('/utilities/Maze.js');
-const { context } = require('../framework/State');
 
 module.exports = class Player {
     constructor(position, health, inventory, id) {
