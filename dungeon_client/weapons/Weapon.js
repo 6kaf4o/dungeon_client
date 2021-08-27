@@ -99,9 +99,9 @@ class BasicGun extends Weapons {
                 this.cooldown = this.reloadRate;
                 this.alreadyShot = true;
                 this.ammo--;
+                shotTo.x -= camera.pos.x;
+                shotTo.y -= camera.pos.y;
             }
-            shotTo.x -= camera.pos.x;
-            shotTo.y -= camera.pos.y;
         }
     }
 }
