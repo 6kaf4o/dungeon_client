@@ -54,6 +54,17 @@ module.exports = class Inventory {
     update(camera = new Camera()) {
         for (let i = 49; i <= 57; i++) { // event.keyCode
             if (Gamestate.isKeyPressed[i]) {
+                this.content.forEach(slot => {
+                    if (!slot.empty) {
+                        let a = slot.item;
+                        a.stopUsing();
+                        if (a.reloading) {
+                            if (a.ammo == 0) a.cooldown = a.reloadTime;
+                            else a.cooldown = a.fireRate;
+                            a.reloading = false;
+                        }
+                    }
+                })
                 if (this.getSelected()) this.getSelected().stopUsing();
                 if (this.maxSize > i - 49) this.selected = i - 49; // why are we still using event.keyCode
                 if (Gamestate.isMouseDown && this.getSelected()) this.getSelected().startUsing();
@@ -61,10 +72,13 @@ module.exports = class Inventory {
         }
 
         for (let i = 0; i < this.maxSize; i++) {
+            this.content[i].equipped = false;
             if (!this.content[i].empty) {
                     this.content[i].item.update(camera);
             }
         }
+
+        this.getSelected().equipped = true;
     }
 
     getSelected() {

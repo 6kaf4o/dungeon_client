@@ -20,6 +20,7 @@ class Weapons { // TODO: Abstract class
         this.maxAmmo = ammo;
         this.reloadTime = 500;
         this.reloading = false;
+        this.equipped = false;
     }
 
     startUsing() {
@@ -43,7 +44,7 @@ class Weapons { // TODO: Abstract class
             }
         }
         this.cooldown--;
-        if (Gamestate.isKeyPressed[32]) {
+        if (Gamestate.isKeyPressed[32] && this.equipped) {
             this.reloading = true;
             this.cooldown = this.reloadTime;
             this.ammo = this.maxAmmo;
