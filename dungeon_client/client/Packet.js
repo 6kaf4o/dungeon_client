@@ -2,11 +2,9 @@ const Client = require('/client/Client');
 
 class Packet{
     constructor(){
-        this.autoPickup = [];
-        this.packet = {Bullet: false, PlayerLoc: false};
-        this.timeout;
-        this.time;
+        this.packet = {Bullet: false, PlayerLoc: false};y
     }
+
 
     movement(loc){
         Packet.playerLoc = loc; 
@@ -14,10 +12,6 @@ class Packet{
 
     shot(bullet){
         Packet.shot = bullet;
-    }
-
-    addAutoPickup(obj){
-        this.autoPickup.push(obj);
     }
 
     send(){
@@ -34,8 +28,6 @@ class Packet{
             }
 
             this.packet.parent = value;
-
-            this.autoPickup();
         }
     }
 
@@ -43,27 +35,8 @@ class Packet{
         this.packet.packetParent = false;
     }
 
-    stop(){
-        this.timeout.clearTimeout();
-    }
+    init(){
 
-    start(){
-        if(this.time === undefined){
-            return Error('You need to call init() first!');
-        }
-
-        this.init(this.time).bind(this);
-    }
-
-    init(time){
-        this.time = time;
-        this.timeout = setTimeout(()=>{
-           
-            this.addPacket(this.autoPickup).bind(this);
-
-            this.send().bind(this);
-
-        }, time)
     }
 }
 
