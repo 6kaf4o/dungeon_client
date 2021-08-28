@@ -2,7 +2,7 @@ const Client = require('/client/Client');
 
 class Packet{
     constructor(){
-        this.packet = {Bullet: false, PlayerLoc: false};y
+        this.packet = {Bullet: false, PlayerLoc: false};
     }
 
 
